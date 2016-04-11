@@ -24,6 +24,7 @@
   },
   "main": "dist/js/uikit.js",
   "dependencies": {
+    "lodash": "^4.10.0",
     "node-promise": "^0.5.10"
   },
   "devDependencies": {
