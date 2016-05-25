@@ -23,18 +23,8 @@
 
 .uk-table-borderd th, .uk-table-borderd td {
     border: @table-borderd-width solid @table-borderd-color;
-    border-right: none;
-    border-bottom: none;
+    .hook-table-borderd;
 }
-
-.uk-table-borderd tr:last-child td {
-    border-bottom: @table-borderd-width solid @table-borderd-color;
-}
-
-.uk-table-borderd tr td:last-child, .uk-table-borderd th:last-child {
-    border-right: @table-borderd-width solid @table-borderd-color;
-}
-
 
 // Component
 // ========================================================================
