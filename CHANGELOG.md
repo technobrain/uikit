@@ -1,9 +1,13 @@
 # Changelog
 
-### WIP
+### 2.26.3 (May 12, 2016)
 
   - Added UIkit.Utils.throttle helper function
-  - Removed default ```transition-property: all``` for all uk-form inputs + search component input
+  - Updated icon component to FontAwesome 4.6.0
+  - Updated list button action in html mode (html editor)
+  - Removed default ```transition-property: all``` for all uk-form inputs
+  - Fixed fullscreen videos on iOS + lightbox
+  - Fixed links in sortables + nestables on iOS/Windows mobile
 
 ### 2.26.2 (April 06, 2016)
   - Added iframe support for lightbox component
