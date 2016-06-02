@@ -27,7 +27,11 @@
 // Sub-object `uk-article-title`
 // ========================================================================
 
-.hook-article-title() {}
+.hook-article-title() {
+  @media(max-width: @breakpoint-small) {
+    font-size:                   round((@article-title-font-size * 0.9));
+  }
+}
 
 
 // Sub-object `uk-article-meta`
@@ -39,7 +43,11 @@
 // Sub-object `uk-article-lead`
 // ========================================================================
 
-.hook-article-lead() {}
+.hook-article-lead() {
+  @media(max-width: @breakpoint-small) {
+    font-size:                   round((@article-lead-font-size * 0.9));
+  }
+}
 
 
 // Sub-object `uk-article-divider`
