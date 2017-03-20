@@ -11,7 +11,8 @@ if (request.status === 200) {
 
 var styles = $.extend({
         core: {css: '../dist/css/uikit-core.css'},
-        theme: {css: '../dist/css/uikit.css'}
+        theme: {css: '../dist/css/uikit.css'},
+        'tbn-theme': {css: '../dist/css/uikit.tb-theme.css'}
     }, themes),
     component = location.pathname.split('/').pop().replace(/.html$/, ''),
     components = [
