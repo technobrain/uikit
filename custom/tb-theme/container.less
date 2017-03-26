@@ -1,0 +1,46 @@
+//
+// Component: Container
+//
+// ========================================================================
+
+
+// Variables
+// ========================================================================
+
+
+// Miscellaneous
+// ========================================================================
+
+.hook-container-misc() {
+  // new rule
+  .tb-navbar-container:not(.uk-navbar-transparent) {
+    background: linear-gradient(to left, #28a5f5, #1e87f0);
+  }
+
+  .tb-sidebar-left {
+
+    position: fixed;
+    // position: relative;
+    // float: left;
+    top: @navbar-nav-item-height;
+    // top: 0;
+    // bottom: 0;
+    box-sizing: border-box;
+    width: 240px !important;
+    // height: 800px;
+    // height: 100%;
+    // margin-bottom: 60px;
+    bottom: 0;
+    padding: 40px 40px 60px 40px;
+    // padding: 40px 40px 60px 40px;
+    border-right: 1px #e5e5e5 solid;
+    overflow: scroll;
+    // overflow: hidden;
+  }
+
+  @media (min-width: @breakpoint-medium) {
+    .tb-sidebar-left+.tb-main {
+      padding-left: 240px;
+    }
+  }
+}
