@@ -2056,10 +2056,10 @@ select.uk-form-width-xsmall {
   }
   .tb-sidebar-left + .tb-navbar-container {
     padding-left: 240px;
-    padding-top: 0;
   }
   .tb-sidebar-left + .tb-main {
     padding-left: 240px;
+    padding-top: 0;
   }
 }
 /* ========================================================================
