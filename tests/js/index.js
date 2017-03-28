@@ -87,6 +87,7 @@ $(() => {
         'iconnav',
         'label',
         'layout',
+        'layout2',
         'link',
         'list',
         'margin',

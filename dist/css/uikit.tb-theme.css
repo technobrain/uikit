@@ -2032,6 +2032,16 @@ select.uk-form-width-xsmall {
 }
 .tb-sidebar-left {
   position: fixed;
+  top: 0;
+  box-sizing: border-box;
+  width: 240px !important;
+  bottom: 0;
+  padding: 40px 40px 60px 40px;
+  border-right: 1px #e5e5e5 solid;
+  overflow: scroll;
+}
+.tb-sidebar-left-bottom {
+  position: fixed;
   top: 80px;
   box-sizing: border-box;
   width: 240px !important;
@@ -2041,6 +2051,13 @@ select.uk-form-width-xsmall {
   overflow: scroll;
 }
 @media (min-width: 960px) {
+  .tb-sidebar-left-bottom + .tb-main {
+    padding-left: 240px;
+  }
+  .tb-sidebar-left + .tb-navbar-container {
+    padding-left: 240px;
+    padding-top: 0;
+  }
   .tb-sidebar-left + .tb-main {
     padding-left: 240px;
   }
