@@ -2050,6 +2050,9 @@ select.uk-form-width-xsmall {
   border-right: 1px #e5e5e5 solid;
   overflow: scroll;
 }
+.tb-main {
+  padding-top: 0;
+}
 @media (min-width: 960px) {
   .tb-sidebar-left-bottom + .tb-main {
     padding-left: 240px;
@@ -2059,7 +2062,6 @@ select.uk-form-width-xsmall {
   }
   .tb-sidebar-left + .tb-main {
     padding-left: 240px;
-    padding-top: 0;
   }
 }
 /* ========================================================================
