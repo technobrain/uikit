@@ -394,13 +394,13 @@ pre code {
 /* Selection pseudo-element
  ========================================================================== */
 ::-moz-selection {
-  background: #39f;
-  color: #fff;
+  background: #9df;
+  color: #666;
   text-shadow: none;
 }
 ::selection {
-  background: #39f;
-  color: #fff;
+  background: #9df;
+  color: #666;
   text-shadow: none;
 }
 /* HTML5 elements
