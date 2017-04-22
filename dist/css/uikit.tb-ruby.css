@@ -103,7 +103,7 @@ strong {
   color: #f0506e;
   white-space: nowrap;
   padding: 2px 6px;
-  background: #f6b1c3;
+  background: #f8e5e8;
 }
 /*
  * Emphasize
@@ -722,7 +722,7 @@ a.uk-link-reset:focus,
   border-bottom: 1px solid #f6b1c3;
 }
 .uk-list-striped > li:nth-of-type(odd) {
-  background: #f6b1c3;
+  background: #f8e5e8;
 }
 .uk-list-striped > li:nth-child(n+2) {
   margin-top: 0;
@@ -875,7 +875,7 @@ a.uk-link-reset:focus,
  */
 .uk-table-striped > tr:nth-of-type(odd),
 .uk-table-striped tbody tr:nth-of-type(odd) {
-  background: #f6b1c3;
+  background: #f8e5e8;
 }
 /*
  * Hover
@@ -986,7 +986,7 @@ a.uk-link-reset:focus,
   width: 36px;
   height: 36px;
   border-radius: 500px;
-  background: #f6b1c3;
+  background: #f8e5e8;
   color: #999;
   vertical-align: middle;
   /* 1 */
@@ -1007,14 +1007,14 @@ a.uk-link-reset:focus,
 /* Hover + Focus */
 .uk-icon-button:hover,
 .uk-icon-button:focus {
-  background-color: #f39ab1;
+  background-color: #f3d1d6;
   color: #666;
   outline: none;
 }
 /* OnClick + Active */
 .uk-icon-button:active,
 .uk-active > .uk-icon-button {
-  background-color: #f183a0;
+  background-color: #edbdc4;
   color: #666;
 }
 /* ========================================================================
@@ -1191,7 +1191,7 @@ a.uk-link-reset:focus,
 .uk-input:disabled,
 .uk-select:disabled,
 .uk-textarea:disabled {
-  background-color: #f6b1c3;
+  background-color: #f8e5e8;
   color: #999;
   border-color: #f6b1c3;
 }
@@ -1391,7 +1391,7 @@ select.uk-form-width-xsmall {
  */
 .uk-radio:disabled,
 .uk-checkbox:disabled {
-  background-color: #f6b1c3;
+  background-color: #f8e5e8;
   border-color: #f6b1c3;
 }
 .uk-radio:disabled:checked {
@@ -1939,7 +1939,7 @@ select.uk-form-width-xsmall {
  * Muted
  */
 .uk-section-muted {
-  background: #f6b1c3;
+  background: #f8e5e8;
 }
 /*
  * Primary
@@ -2428,7 +2428,7 @@ select.uk-form-width-xsmall {
  * Muted
  */
 .uk-tile-muted {
-  background: #f6b1c3;
+  background: #f8e5e8;
 }
 /*
  * Primary
@@ -2828,7 +2828,7 @@ select.uk-form-width-xsmall {
   position: relative;
   margin-bottom: 20px;
   padding: 15px 29px 15px 15px;
-  background: #f6b1c3;
+  background: #f8e5e8;
   color: #666;
 }
 /* Add margin if adjacent element */
@@ -3141,7 +3141,7 @@ select.uk-form-width-xsmall {
  ========================================================================== */
 .uk-comment-primary {
   padding: 30px;
-  background-color: #f6b1c3;
+  background-color: #f8e5e8;
 }
 /* ========================================================================
    Component: Search
@@ -3595,7 +3595,7 @@ ul.uk-nav-sub {
 /* Container
  ========================================================================== */
 .uk-navbar-container:not(.uk-navbar-transparent) {
-  background: #f6b1c3;
+  background: #f8e5e8;
 }
 /*
  * Remove pseudo elements created by micro clearfix as precaution (if Container component is used)
@@ -4065,12 +4065,12 @@ ul.uk-nav-sub {
 /* Hover + Focus */
 .uk-subnav-pill > * > a:hover,
 .uk-subnav-pill > * > a:focus {
-  background-color: #f6b1c3;
+  background-color: #f8e5e8;
   color: #666;
 }
 /* OnClick */
 .uk-subnav-pill > * > a:active {
-  background-color: #f6b1c3;
+  background-color: #f8e5e8;
   color: #666;
 }
 /* Active */
@@ -5240,7 +5240,7 @@ ul.uk-nav-sub {
   position: relative;
   margin-bottom: 10px;
   padding: 15px;
-  background: #f6b1c3;
+  background: #f8e5e8;
   color: #666;
   font-size: 1.25rem;
   line-height: 1.4;
@@ -5367,7 +5367,7 @@ ul.uk-nav-sub {
   /* 3 */
   border: 0;
   /* 4 */
-  background-color: #f6b1c3;
+  background-color: #f8e5e8;
   /* 5 */
   margin-bottom: 20px;
   height: 15px;
@@ -5389,7 +5389,7 @@ ul.uk-nav-sub {
  * 2. Remove progress bar for indeterminate state in Firefox
  */
 .uk-progress::-webkit-progress-bar {
-  background-color: #f6b1c3;
+  background-color: #f8e5e8;
   border-radius: 500px;
   overflow: hidden;
 }
@@ -7029,7 +7029,7 @@ td.uk-text-break {
   background-color: #f8f0f3;
 }
 .uk-background-muted {
-  background-color: #f6b1c3;
+  background-color: #f8e5e8;
 }
 .uk-background-primary {
   background-color: #a20d1e;
