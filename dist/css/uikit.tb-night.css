@@ -20,6 +20,16 @@ html {
   background: #1e1e1e;
   color: #ccc;
 }
+@media (max-width: 639px) {
+  html {
+    font-size: 0.7rem;
+  }
+}
+@media (max-width: 959px) {
+  html {
+    font-size: 0.85rem;
+  }
+}
 /*
  * Removes default margin.
  */
@@ -3761,6 +3771,11 @@ ul.uk-nav-sub {
 .uk-navbar-item {
   color: #ccc;
 }
+@media (max-width: 639px) {
+  .uk-navbar-item {
+    height: 40px;
+  }
+}
 /* Toggle
  ========================================================================== */
 .uk-navbar-toggle {
@@ -3961,6 +3976,12 @@ ul.uk-nav-sub {
   left: 50px;
   right: 0;
   border-top: 1px solid #333;
+}
+@media (max-width: 639px) {
+  .uk-navbar-nav > li > a,
+  .uk-navbar-toggle {
+    height: 40px;
+  }
 }
 /* ========================================================================
    Component: Subnav
