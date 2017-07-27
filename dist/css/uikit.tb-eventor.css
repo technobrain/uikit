@@ -3736,7 +3736,7 @@ ul.uk-nav-sub {
   height: 80px;
   padding: 0 15px;
   /* 3 */
-  font-size: 0.875rem;
+  font-size: 16px;
   font-family: "Hiragino Kaku Gothic ProN", Meiryo, "ＭＳ Ｐゴシック", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   /* 4 */
   text-decoration: none;
@@ -3759,7 +3759,7 @@ ul.uk-nav-sub {
 .uk-navbar-nav > li:hover > a,
 .uk-navbar-nav > li > a:focus,
 .uk-navbar-nav > li > a.uk-open {
-  color: #131916;
+  color: #ecefee;
   outline: none;
 }
 /* OnClick */
@@ -3793,7 +3793,7 @@ ul.uk-nav-sub {
 .uk-navbar-toggle:hover,
 .uk-navbar-toggle:focus,
 .uk-navbar-toggle.uk-open {
-  color: #131916;
+  color: #ecefee;
   outline: none;
   text-decoration: none;
 }
@@ -3828,8 +3828,8 @@ ul.uk-nav-sub {
   box-sizing: border-box;
   width: 200px;
   /* 4 */
-  padding: 25px;
-  background: #fefefe;
+  padding: 15px;
+  background: #e0e0e0;
   color: #131916;
   box-shadow: 0 5px 12px rgba(0, 0, 0, 0.15);
 }
@@ -3842,16 +3842,16 @@ ul.uk-nav-sub {
  */
 /* Direction */
 [class*='uk-navbar-dropdown-top'] {
-  margin-top: -15px;
+  margin-top: 0;
 }
 [class*='uk-navbar-dropdown-bottom'] {
-  margin-top: 15px;
+  margin-top: 0;
 }
 [class*='uk-navbar-dropdown-left'] {
-  margin-left: -15px;
+  margin-left: 0;
 }
 [class*='uk-navbar-dropdown-right'] {
-  margin-left: 15px;
+  margin-left: 0;
 }
 /*
  * Grid
@@ -3859,14 +3859,14 @@ ul.uk-nav-sub {
  */
 /* Gutter Horizontal */
 .uk-navbar-dropdown-grid {
-  margin-left: -50px;
+  margin-left: -30px;
 }
 .uk-navbar-dropdown-grid > * {
-  padding-left: 50px;
+  padding-left: 30px;
 }
 /* Gutter Vertical */
 .uk-navbar-dropdown-grid > .uk-grid-margin {
-  margin-top: 50px;
+  margin-top: 30px;
 }
 /* Stack */
 .uk-navbar-dropdown-stack .uk-navbar-dropdown-grid > * {
@@ -3941,7 +3941,7 @@ ul.uk-nav-sub {
  ========================================================================== */
 .uk-navbar-dropbar {
   position: relative;
-  background: #fefefe;
+  background: #e0e0e0;
   overflow: hidden;
 }
 /*
@@ -3974,15 +3974,15 @@ ul.uk-nav-sub {
   position: absolute;
   top: 0;
   bottom: 0;
-  left: 25px;
+  left: 15px;
   border-left: 1px solid #ccc;
 }
 /* Vertical */
 .uk-navbar-dropdown-grid.uk-grid-stack > .uk-grid-margin::before {
   content: "";
   position: absolute;
-  top: -25px;
-  left: 50px;
+  top: -15px;
+  left: 30px;
   right: 0;
   border-top: 1px solid #ccc;
 }
