@@ -113,7 +113,7 @@ strong {
   color: #b64926;
   white-space: nowrap;
   padding: 2px 6px;
-  background: #e0e0e0;
+  background: #f0f0f0;
 }
 /*
  * Emphasize
@@ -735,7 +735,7 @@ a.uk-link-reset:focus,
   border-bottom: 1px solid #ccc;
 }
 .uk-list-striped > li:nth-of-type(odd) {
-  background: #e0e0e0;
+  background: #f0f0f0;
 }
 .uk-list-striped > li:nth-child(n+2) {
   margin-top: 0;
@@ -888,7 +888,7 @@ a.uk-link-reset:focus,
  */
 .uk-table-striped > tr:nth-of-type(odd),
 .uk-table-striped tbody tr:nth-of-type(odd) {
-  background: #e0e0e0;
+  background: #f0f0f0;
 }
 /*
  * Hover
@@ -999,7 +999,7 @@ a.uk-link-reset:focus,
   width: 36px;
   height: 36px;
   border-radius: 500px;
-  background: #e0e0e0;
+  background: #f0f0f0;
   color: #999;
   vertical-align: middle;
   /* 1 */
@@ -1020,14 +1020,14 @@ a.uk-link-reset:focus,
 /* Hover + Focus */
 .uk-icon-button:hover,
 .uk-icon-button:focus {
-  background-color: #d3d3d3;
+  background-color: #e3e3e3;
   color: #131916;
   outline: none;
 }
 /* OnClick + Active */
 .uk-icon-button:active,
 .uk-active > .uk-icon-button {
-  background-color: #c7c7c7;
+  background-color: #d7d7d7;
   color: #131916;
 }
 /* ========================================================================
@@ -1204,7 +1204,7 @@ a.uk-link-reset:focus,
 .uk-input:disabled,
 .uk-select:disabled,
 .uk-textarea:disabled {
-  background-color: #e0e0e0;
+  background-color: #f0f0f0;
   color: #999;
   border-color: #ccc;
 }
@@ -1404,7 +1404,7 @@ select.uk-form-width-xsmall {
  */
 .uk-radio:disabled,
 .uk-checkbox:disabled {
-  background-color: #e0e0e0;
+  background-color: #f0f0f0;
   border-color: #ccc;
 }
 .uk-radio:disabled:checked {
@@ -1952,7 +1952,7 @@ select.uk-form-width-xsmall {
  * Muted
  */
 .uk-section-muted {
-  background: #e0e0e0;
+  background: #f0f0f0;
 }
 /*
  * Primary
@@ -2441,7 +2441,7 @@ select.uk-form-width-xsmall {
  * Muted
  */
 .uk-tile-muted {
-  background: #e0e0e0;
+  background: #f0f0f0;
 }
 /*
  * Primary
@@ -2841,7 +2841,7 @@ select.uk-form-width-xsmall {
   position: relative;
   margin-bottom: 20px;
   padding: 15px 29px 15px 15px;
-  background: #e0e0e0;
+  background: #f0f0f0;
   color: #131916;
 }
 /* Add margin if adjacent element */
@@ -3154,7 +3154,7 @@ select.uk-form-width-xsmall {
  ========================================================================== */
 .uk-comment-primary {
   padding: 30px;
-  background-color: #e0e0e0;
+  background-color: #f0f0f0;
 }
 /* ========================================================================
    Component: Search
@@ -3608,8 +3608,8 @@ ul.uk-nav-sub {
 /* Container
  ========================================================================== */
 .uk-navbar-container:not(.uk-navbar-transparent) {
-  background: #e0e0e0;
-  background: #002016;
+  background: #fefefe;
+  background: #f0f0f0;
 }
 /*
  * Remove pseudo elements created by micro clearfix as precaution (if Container component is used)
@@ -3829,7 +3829,7 @@ ul.uk-nav-sub {
   width: 200px;
   /* 4 */
   padding: 15px;
-  background: #e0e0e0;
+  background: #f0f0f0;
   color: #131916;
   box-shadow: 0 5px 12px rgba(0, 0, 0, 0.15);
 }
@@ -3941,7 +3941,7 @@ ul.uk-nav-sub {
  ========================================================================== */
 .uk-navbar-dropbar {
   position: relative;
-  background: #e0e0e0;
+  background: #f0f0f0;
   overflow: hidden;
 }
 /*
@@ -4101,12 +4101,12 @@ ul.uk-nav-sub {
 /* Hover + Focus */
 .uk-subnav-pill > * > a:hover,
 .uk-subnav-pill > * > a:focus {
-  background-color: #e0e0e0;
+  background-color: #f0f0f0;
   color: #131916;
 }
 /* OnClick */
 .uk-subnav-pill > * > a:active {
-  background-color: #e0e0e0;
+  background-color: #f0f0f0;
   color: #131916;
 }
 /* Active */
@@ -5276,7 +5276,7 @@ ul.uk-nav-sub {
   position: relative;
   margin-bottom: 10px;
   padding: 15px;
-  background: #e0e0e0;
+  background: #f0f0f0;
   color: #131916;
   font-size: 1.25rem;
   line-height: 1.4;
@@ -5403,7 +5403,7 @@ ul.uk-nav-sub {
   /* 3 */
   border: 0;
   /* 4 */
-  background-color: #e0e0e0;
+  background-color: #f0f0f0;
   /* 5 */
   margin-bottom: 20px;
   height: 15px;
@@ -5425,7 +5425,7 @@ ul.uk-nav-sub {
  * 2. Remove progress bar for indeterminate state in Firefox
  */
 .uk-progress::-webkit-progress-bar {
-  background-color: #e0e0e0;
+  background-color: #f0f0f0;
   border-radius: 500px;
   overflow: hidden;
 }
@@ -7065,7 +7065,7 @@ td.uk-text-break {
   background-color: #fefefe;
 }
 .uk-background-muted {
-  background-color: #e0e0e0;
+  background-color: #f0f0f0;
 }
 .uk-background-primary {
   background-color: #002016;
@@ -7582,6 +7582,7 @@ td.uk-text-break {
   /* 1 */
   text-decoration: none;
   color: #ecefee;
+  background: #002016;
 }
 /* Hover + Focus */
 .uk-logo:hover,
@@ -7590,6 +7591,7 @@ td.uk-text-break {
   outline: none;
   /* 1 */
   text-decoration: none;
+  color: #f0f0f0;
 }
 .uk-logo-inverse {
   display: none;
