@@ -5,21 +5,15 @@ function plugin(UIkit) {
     }
 
     var { util, mixin } = UIkit;
-    var {$, doc, fastdom, flipPosition, isTouch, isWithin, pointerDown, pointerEnter, pointerLeave, toJQuery} = util;
+    var {$, doc, fastdom, flipPosition, isTouch, isWithin, pointerDown, pointerEnter, pointerLeave} = util;
 
-    var active;
-
-    doc.on('click', e => {
-        if (active && !isWithin(e.target, active.$el)) {
-            active.hide();
-        }
-    });
+    var actives = [];
 
     UIkit.component('tooltip', {
 
         attrs: true,
 
-        mixins: [mixin.toggable, mixin.position],
+        mixins: [mixin.togglable, mixin.position],
 
         props: {
             delay: Number,
@@ -38,8 +32,12 @@ function plugin(UIkit) {
             container: true,
         },
 
-        init() {
-            this.container = this.container === true && UIkit.container || this.container && toJQuery(this.container);
+        computed: {
+
+            container() {
+                return $(this.$props.container === true && UIkit.container || this.$props.container || UIkit.container);
+            }
+
         },
 
         connected() {
@@ -54,15 +52,18 @@ function plugin(UIkit) {
 
             show() {
 
-                if (active === this) {
+                if (~actives.indexOf(this)) {
                     return;
                 }
 
-                if (active) {
-                    active.hide();
-                }
+                actives.forEach(active => active.hide());
+                actives.push(this);
 
-                active = this;
+                doc.on(`click.${this.$options.name}`, e => {
+                    if (!isWithin(e.target, this.$el)) {
+                        this.hide();
+                    }
+                });
 
                 clearTimeout(this.showTimer);
 
@@ -87,11 +88,13 @@ function plugin(UIkit) {
 
             hide() {
 
-                if (this.$el.is('input') && this.$el[0] === document.activeElement) {
+                var index = actives.indexOf(this);
+
+                if (!~index || this.$el.is('input') && this.$el[0] === document.activeElement) {
                     return;
                 }
 
-                active = active !== this && active || false;
+                actives.splice(index, 1);
 
                 clearTimeout(this.showTimer);
                 clearInterval(this.hideTimer);
@@ -99,22 +102,28 @@ function plugin(UIkit) {
                 this.toggleElement(this.tooltip, false);
                 this.tooltip && this.tooltip.remove();
                 this.tooltip = false;
+                doc.off(`click.${this.$options.name}`);
+
             }
 
         },
 
         events: {
+
             [`focus ${pointerEnter} ${pointerDown}`](e) {
                 if (e.type !== pointerDown || !isTouch(e)) {
                     this.show();
                 }
             },
+
             'blur': 'hide',
+
             [pointerLeave](e) {
                 if (!isTouch(e)) {
                     this.hide()
                 }
             }
+
         }
 
     });

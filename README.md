@@ -10,6 +10,18 @@ UIkit is a lightweight and modular front-end framework for developing fast and p
 * [@getuikit](https://twitter.com/getuikit) - Get the latest buzz on Twitter
 * [Gitter Chat](https://gitter.im/uikit/uikit) - Join our developer chat on Gitter.
 
+---
+
+<p align="center">
+  <b>UIkit is an Open Source project developed by YOOtheme.</b>
+  <br><br>
+  <a href="https://yootheme.com" align="center">
+      <img width="134" height="30" src="http://yootheme.com/pro/images/logo.svg">
+  </a>
+</p>
+
+---
+
 ## Getting started
 
 You have the following options to get UIkit:
@@ -69,7 +81,7 @@ UIkit is maintained by using the [Semantic Versioning Specification (SemVer)](ht
 --- | --- | --- | --- | --- | --- |
 Latest ✔ | Latest ✔ | Latest ✔ | 10+ ✔ | 7.1+ ✔ | Latest ✔ |
 
-Tested with [BrowserStack](https://www.browserstack.com) (thanks for sponsoring!).
+Tested With<br>[![BrowserStack](https://user-images.githubusercontent.com/355427/27389060-9f716c82-569d-11e7-923c-bd5fe7f1c55a.png)](https://www.browserstack.com)
 
 ## Copyright and License
 

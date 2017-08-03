@@ -1,16 +1,16 @@
-import { $, hasTouch, isTouch, pointerEnter, pointerLeave } from '../util/index';
+import { $, $trigger, hasTouch, isTouch, pointerEnter, pointerLeave, query } from '../util/index';
 
 export default function (UIkit) {
 
     UIkit.component('toggle', {
 
-        mixins: [UIkit.mixin.toggable],
+        mixins: [UIkit.mixin.togglable],
 
         args: 'target',
 
         props: {
-            href: 'jQuery',
-            target: 'jQuery',
+            href: String,
+            target: null,
             mode: 'list',
             media: 'media'
         },
@@ -21,6 +21,14 @@ export default function (UIkit) {
             mode: 'click',
             queued: true,
             media: false
+        },
+
+        computed: {
+
+            target() {
+                return query(this.$props.target || this.href, this.$el) || this.$el;
+            }
+
         },
 
         events: [
@@ -35,7 +43,7 @@ export default function (UIkit) {
 
                 handler(e) {
                     if (!isTouch(e)) {
-                        this.toggle(e.type === pointerEnter ? 'toggleShow' : 'toggleHide');
+                        this.toggle(`toggle${e.type === pointerEnter ? 'show' : 'hide'}`);
                     }
                 }
 
@@ -56,9 +64,13 @@ export default function (UIkit) {
                     }
 
                     // TODO better isToggled handling
-                    if (this.href
-                        || $(e.target).closest('a[href="#"], button').length
-                        || $(e.target).closest('a[href]') && (this.cls || !this.target.is(':visible'))
+                    var link = $(e.target).closest('a[href]')[0];
+                    if ($(e.target).closest('a[href="#"], button').length
+                        || link && (
+                            this.cls
+                            || !this.target.is(':visible')
+                            || link.hash && this.target.is(link.hash)
+                        )
                     ) {
                         e.preventDefault();
                     }
@@ -73,8 +85,6 @@ export default function (UIkit) {
 
             write() {
 
-                this.target = this.target || this.href || this.$el;
-
                 if (!~this.mode.indexOf('media') || !this.media) {
                     return;
                 }
@@ -86,18 +96,14 @@ export default function (UIkit) {
 
             },
 
-            events: ['load', 'resize', 'orientationchange']
+            events: ['load', 'resize']
 
         },
 
         methods: {
 
             toggle(type) {
-
-                var event = $.Event(type || 'toggle');
-                this.target.triggerHandler(event, [this]);
-
-                if (!event.isDefaultPrevented()) {
+                if (!$trigger(this.target, type || 'toggle', [this], true).isDefaultPrevented()) {
                     this.toggleElement(this.target);
                 }
             }

@@ -1,4 +1,4 @@
-import { $, offsetTop } from '../util/index';
+import { $, docHeight, offsetTop } from '../util/index';
 
 export default function (UIkit) {
 
@@ -6,35 +6,33 @@ export default function (UIkit) {
 
         props: {
             duration: Number,
-            transition: String,
+            easing: String,
             offset: Number
         },
 
         defaults: {
             duration: 1000,
-            transition: 'easeOutExpo',
+            easing: 'easeOutExpo',
             offset: 0
         },
 
         methods: {
 
-            scrollToElement(el) {
-
-                el = $(el);
+            scrollTo(el) {
 
                 // get / set parameters
-                var target = offsetTop(el) - this.offset,
-                    docHeight = document.documentElement.offsetHeight,
-                    winHeight = window.innerHeight;
+                var target = offsetTop($(el)) - this.offset,
+                    document = docHeight(),
+                    viewport = window.innerHeight;
 
-                if (target + winHeight > docHeight) {
-                    target = docHeight - winHeight;
+                if (target + viewport > document) {
+                    target = document - viewport;
                 }
 
                 // animate to target, fire callback when done
                 $('html,body')
                     .stop()
-                    .animate({scrollTop: parseInt(target, 10) || 1}, this.duration, this.transition)
+                    .animate({scrollTop: Math.round(target)}, this.duration, this.easing)
                     .promise()
                     .then(() => this.$el.trigger('scrolled', [this]));
 
@@ -51,17 +49,15 @@ export default function (UIkit) {
                 }
 
                 e.preventDefault();
-                this.scrollToElement($(this.$el[0].hash).length ? this.$el[0].hash : 'body');
+                this.scrollTo($(this.$el[0].hash).length ? this.$el[0].hash : 'body');
             }
 
         }
 
     });
 
-    if (!$.easing.easeOutExpo) {
-        $.easing.easeOutExpo = function (x, t, b, c, d) {
-            return (t == d) ? b + c : c * (-Math.pow(2, -10 * t / d) + 1) + b;
-        };
-    }
+    $.easing.easeOutExpo = $.easing.easeOutExpo || function (x, t, b, c, d) {
+        return (t === d) ? b + c : c * (-Math.pow(2, -10 * t / d) + 1) + b;
+    };
 
 }

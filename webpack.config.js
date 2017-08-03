@@ -1,7 +1,6 @@
 var fs = require('fs');
 var glob = require('glob');
 var path = require('path');
-var concat = require('concat');
 var webpack = require('webpack');
 var util = require('./build/util');
 var version = require('./package.json').version;
@@ -10,7 +9,7 @@ var loaders = {
     loaders: [
         {loader: 'buble-loader', test: /(src|tests)(\/|\\).*\.js$/},
         {loader: 'json-loader', test: /\.json$/},
-        {loader: 'html-loader', test: /\.svg$/}
+        {loader: 'html-loader', test: /\.svg$/, options: {minimize: false}}
     ]
 };
 

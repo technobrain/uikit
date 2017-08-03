@@ -1,19 +1,21 @@
-import { $, doc, docElement, isWithin, promise, requestAnimationFrame, toJQuery, toMs, transitionend } from '../util/index';
+import UIkit from '../api/index';
+import { $, doc, docElement, isWithin, promise, requestAnimationFrame, toNode, toJQuery, toMs, transitionend } from '../util/index';
 import Class from './class';
-import Toggable from './toggable';
+import Togglable from './togglable';
 
 var active;
 
 export default {
 
-    mixins: [Class, Toggable],
+    mixins: [Class, Togglable],
 
     props: {
         clsPanel: String,
         selClose: String,
         escClose: Boolean,
         bgClose: Boolean,
-        stack: Boolean
+        stack: Boolean,
+        container: Boolean
     },
 
     defaults: {
@@ -21,13 +23,35 @@ export default {
         escClose: true,
         bgClose: true,
         overlay: true,
-        stack: false
+        stack: false,
+        container: true
     },
 
-    ready() {
+    computed: {
 
-        this.body = $(document.body);
-        this.panel = toJQuery(`.${this.clsPanel}`, this.$el);
+        body() {
+            return $(document.body);
+        },
+
+        panel() {
+            return this.$el.find(`.${this.clsPanel}`);
+        },
+
+        container() {
+            return toNode(this.$props.container === true && UIkit.container || this.$props.container && toJQuery(this.$props.container));
+        },
+
+        transitionElement() {
+            return this.panel;
+        },
+
+        transitionDuration() {
+            return toMs(this.transitionElement.css('transition-duration'));
+        },
+
+        component() {
+            return UIkit[this.$options.name];
+        }
 
     },
 
@@ -54,7 +78,7 @@ export default {
 
             handler(e) {
                 e.preventDefault();
-                this.toggleNow(this.$el);
+                this.toggle();
             }
 
         },
@@ -67,26 +91,29 @@ export default {
 
             handler() {
 
-                if (this.isActive()) {
+                if (this.isToggled()) {
                     return false;
                 }
 
                 var prev = active && active !== this && active;
 
-                if (!active) {
-                    this.body.css('overflow-y', this.getScrollbarWidth() && this.overlay ? 'scroll' : '');
-                }
-
                 active = this;
+                this.component.active = this;
 
                 if (prev) {
                     if (this.stack) {
                         this.prev = prev;
                     } else {
-                        prev.hide();
+                        prev.hide().then(this.show);
+                        return false;
                     }
                 } else {
                     requestAnimationFrame(() => register(this.$options.name));
+                }
+
+                if (!prev) {
+                    this.scrollbarWidth = window.innerWidth - docElement[0].offsetWidth;
+                    this.body.css('overflow-y', this.scrollbarWidth && this.overlay ? 'scroll' : '');
                 }
 
                 docElement.addClass(this.clsPage);
@@ -103,7 +130,7 @@ export default {
 
             handler() {
 
-                if (!this.isActive()) {
+                if (!this.isToggled()) {
                     return false;
                 }
 
@@ -113,29 +140,21 @@ export default {
                     deregister(this.$options.name);
                 }
 
-                var duration = toMs(this.panel.css('transition-duration'));
-
-                return duration ? promise(resolve => {
-                        this.panel.one(transitionend, resolve);
-                        setTimeout(() => {
-                            resolve();
-                            this.panel.off(transitionend, resolve);
-                        }, duration);
-                    }) : undefined;
             }
 
         },
 
         {
 
-            name: 'hide',
+            name: 'hidden',
 
             self: true,
 
             handler() {
-                if (!active) {
+                if (this.component.active === this) {
                     docElement.removeClass(this.clsPage);
                     this.body.css('overflow-y', '');
+                    this.component.active = null;
                 }
             }
 
@@ -145,15 +164,20 @@ export default {
 
     methods: {
 
-        isActive() {
-            return this.$el.hasClass(this.cls);
-        },
-
         toggle() {
-            return this.isActive() ? this.hide() : this.show();
+            return this.isToggled() ? this.hide() : this.show();
         },
 
         show() {
+            if (this.container && !this.$el.parent().is(this.container)) {
+                this.container.appendChild(this.$el[0]);
+                return promise(resolve =>
+                    requestAnimationFrame(() =>
+                        resolve(this.show())
+                    )
+                )
+            }
+
             return this.toggleNow(this.$el, true);
         },
 
@@ -165,19 +189,28 @@ export default {
             return active;
         },
 
-        getScrollbarWidth() {
-            var width = docElement[0].style.width;
+        _toggleImmediate(el, show) {
+            this._toggle(el, show);
 
-            docElement.css('width', '');
+            return this.transitionDuration ? promise((resolve, reject) => {
 
-            var scrollbarWidth = window.innerWidth - docElement.outerWidth(true);
+                if (this._transition) {
+                    this.transitionElement.off(transitionend, this._transition.handler);
+                    this._transition.reject();
+                }
 
-            if (width) {
-                docElement.width(width);
-            }
+                this._transition = {
+                    reject,
+                    handler: () => {
+                        resolve();
+                        this._transition = null;
+                    }
+                };
 
-            return scrollbarWidth;
-        }
+                this.transitionElement.one(transitionend, this._transition.handler);
+
+            }) : promise.resolve();
+        },
     }
 
 }

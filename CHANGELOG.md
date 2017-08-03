@@ -1,5 +1,218 @@
 # Changelog
 
+## 3.0.0 beta 28 (August 01, 2017)
+
+### Added
+
+- Add sticky navbar test
+- Add inverse style for button link
+
+### Changed
+
+- IMPORTANT: Rename `closeAlert` method to `close` in Alert component
+- IMPORTANT: Rename `close` param to `selClose` in Alert component
+- IMPORTANT: Rename `scrollToElement` method to `scrollTo` in Scroll component
+- Add box-shadow to dropbar slide
+
+### Fixed
+
+- Fix icon color in Edge
+- Add workaround to mitigate the duplicating icons issue
+- Fix issue with multilevel dropdown
+- Fix compatibility issue with Prototype and MooTools
+- Fix Sticky Navbar behaviour
+- Fix Parallax (IE11)
+- Fix swiping in Lightbox
+- Fix alert close animation
+
+## 3.0.0 beta 27 (July 20, 2017)
+
+### Fixed
+
+- Remove stacking context for `uk-inline`
+- Prevent scrolling in Lightboxes with one slide only
+
+## 3.0.0 beta 26 (July 20, 2017)
+
+### Added
+
+- Add Lightbox component
+- Add Video component
+
+### Changed
+
+- IMPORTANT: Remove caption from Modal component. Use Lightbox component instead
+- IMPORTANT: Remove lightbox modifier from Modal component. Use Lightbox component instead
+- IMPORTANT: Remove center option from Modal component. Use `uk-margin-auto-vertical` modifier
+- IMPORTANT: Renamed `@modal-dialog-margin-vertical` to `@modal-padding-vertical-s`
+- IMPORTANT: Renamed `@modal-dialog-margin-vertical-xs` to `@modal-padding-vertical`
+- Refactored Modal component
+- `offsetTop` in Height Viewport component only applies if its element's top position is smaller than half the viewport
+- Larger width for form width x-small
+
+### Fixed
+
+- Offcanvas will keep scroll position if anchor link was clicked
+- Fix margin modifier in position component for IE11
+- Fix divider-small text alignment for `hr` elements Edge and IE
+- Fix setting the ratio of Spinner component
+- Fix event handling in Sortable component
+- Fix grid calculation (Firefox)
+- Fix dropdown margins in the dropbar
+- Fix opening Modals from Offcanvas'
+
+## 3.0.0 beta 25 (June 9, 2017)
+
+### Added
+
+- Add size modifier to tile component
+- Add link text to link component
+- Add 500px icon
+
+### Changed
+
+- Larger horizontal padding for form input, select and textarea
+- Improve Parallax Background Position behaviour
+
+### Removed
+
+- Remove padding xlarge from padding component
+
+### Fixed
+
+- Fix touch event handling
+- Fix cursor height for active forms in Safari
+- Fix Grid and Margin component for cells with no height
+- Fix Parallax if element is translated vertical
+- Fix Grid divider in rtl mode
+
+## 3.0.0 beta 24 (May 22, 2017)
+
+### Changed
+
+- Make Icon component work with button elements
+
+### Fixed
+
+- Fix margin bottom behaviour in Grid Parallax
+- Fix error thrown by Notification component
+- Fix `expand` mode in Height Viewport component
+- Fix background position behaviour in Parallax component
+- Fix removal of classes after sorting in Sortable component
+
+## 3.0.0 beta 23 (May 18, 2017)
+
+### Added
+
+- Add Parallax component
+- Add Grid Parallax component
+- Add Form Range component
+- Add Marker component
+- Add hidden classes for touch devices to visibility component
+- Add padding xlarge to padding component
+- Add transform center to utility component
+- Add `clsBelow` option for Sticky component (uk-sticky-below)
+
+### Changed
+
+- IMPORTANT: Move Less/Sass imports into one file. Use `components/_import.less`
+- IMPORTANT: Renamed `transition` option to `easing` in Scroll component
+- Improve flip behaviour in Drop component
+- Improve `class` handling
+
+### Fixed
+
+- Fix support for more than two digits in Countdown component
+- Fix typo in Togglable mixin name
+- Fix form select image for RTL
+- Fix Scrollspy `cls` option
+- Fix HeightMatch not working on initial page load
+- Fix touch events
+- Fix click event firing twice (iOS <= 9.2)
+- Fix missing table hook
+- Prevent inital page jump (Safari)
+- Fix document height calculation (IE 10)
+- Fix Tooltip recreates on hovering the already focused input
+
+## 3.0.0 beta 22 (April 24, 2017)
+
+### Added
+
+- Add Countdown component
+- Add divider, justify and responsive modifier to table component
+- Add inverse support for table component
+- Add box-shadow bottom to utility component
+
+### Changed
+
+- IMPORTANT: Remove style from default table component. Use `uk-table-divider` modifier
+- Move border style to table row instead of table cell
+- Remove margin from the last-child in table component cell
+
+### Fixed
+
+- Fix swiping in Switcher
+- Fix scrolling in Scrollspy Nav (Firefox)
+- Fix Navbar Dropbar
+- Fix Tooltip with different animations
+- Fix sass showing error when using different color mode in certain components
+
+## 3.0.0 beta 21 (April 11, 2017)
+
+### Added
+
+- Add Gitter icon
+- Attribute observer listens for changes to 'component' attribute too
+
+### Fixed
+
+- Fix instagram, tumblr and vimeo icons
+- Fix unexpected closing of Modal Dialog
+- Fix 'click' default behaviour prevention in Toggle
+- Fix memory leak in Icons
+
+## 3.0.0 beta 20 (April 5, 2017)
+
+### Added
+
+- Add breakpoint classes for flex alignment
+
+### Fixed
+
+- Fix Drop positioning
+- Fix imports in Modal
+- Fix 'click' default behaviour prevention in Toggle
+- Fix queued Toggle
+- Fix closing Offcanvas with swipe gesture (Android)
+- Fix Toggle icons preventing Drops from opening
+- Fix loading UIkit deferred
+
+## 3.0.0 beta 19 (March 31, 2017)
+
+### Added
+
+- Add SASS support
+- Add Leader to utility component
+- Add Offcanvas close button
+- Add margin auto vertical classes
+- Add padding left/right remove classes
+- Add tripadvisor and yelp icons
+- Add computed properties
+
+### Changed
+
+- IMPORTANT: Offcanvas requires to wrap page in extra div
+- Refactored Offcanvas component
+- Update instagram, tumblr and vimeo icons
+- Component Constructor initializes multiple components at once
+
+### Fixed
+
+- Fix Offcanvas scrolling on touch devices
+- Fix Scrollspy in view check
+- Fix text wrapping for Firefox in position component
+- Fix closing Accordion without animation
+
 ## 3.0.0 beta 18 (March 10, 2017)
 
 ### Fixed
@@ -23,7 +236,7 @@
 
 - Fix deferred UIKit loading
 - Fix Dropdowns not closing immediately upon hovering other navbar item in Navbar component
-- Fix navbar groups center left/right in IE 11
+- Fix navbar groups center left/right (IE 11)
 - Fix "sticky on up" behaviour in Sticky component
 - Fix Offcanvas closing without animation
 - Fix links in Notification message clickable
@@ -67,7 +280,7 @@
 - Move Icons into JavaScript
 - Component Constructor initializes and returns single component only
 - Rename function "show" to "toggle" in Accordion component
-- Switcher no longers "swipes" with mouse
+- Switcher no longer "swipes" with mouse
 - Sticky component applies active class after scrolling below top
 
 ### Removed
@@ -135,7 +348,7 @@
 - Fix context selectors
 - Sticky components sets inactive class initially
 - Fix path to icons.svg in /custom folder
-- Fix wrapping grid columns in IE and Edge
+- Fix wrapping grid columns (IE + Edge)
 
 ## 3.0.0 beta 9 (February 3, 2017)
 
@@ -143,7 +356,7 @@
 
 - Fix prefixed Javascript not working
 - Fix beta 8 regression with Scrollspy targets
-- Fix width-expand not wrapping into next row in rare cases in Safari
+- Fix width-expand not wrapping into next row in rare cases (Safari)
 
 ## 3.0.0 beta 8 (February 2, 2017)
 
@@ -161,7 +374,7 @@
 - Fix Cover component if the container has padding
 - Fix Scrollspy component targeting wrong elements
 - Switcher supports 'data-' prefixed items now
-- Fix beta 7 regression (IE 10 + 11)
+- Fix beta 7 regression (IE <= 11)
 
 ## 3.0.0 beta 7 (February 1, 2017)
 
@@ -195,13 +408,13 @@
 
 ### Added
 
-- Toggable triggers 'shown'/'hidden' events, when animations complete
+- Togglable triggers 'shown'/'hidden' events, when animations complete
 
 ### Fixed
 
 - Fix component initialization
 - Fix card component extending inverse
-- Fix background-fixed for Firefox and IE
+- Fix background-fixed (Firefox + IE)
 
 ## 3.0.0 beta 5 (January 18, 2017)
 

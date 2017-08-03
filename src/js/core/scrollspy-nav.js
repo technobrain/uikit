@@ -1,4 +1,4 @@
-import { $, offsetTop, toJQuery, isInView } from '../util/index';
+import { $, docHeight, offsetTop, toJQuery, isInView } from '../util/index';
 
 export default function (UIkit) {
 
@@ -20,17 +20,29 @@ export default function (UIkit) {
             offset: 0
         },
 
+        computed: {
+
+            links() {
+                return this.$el.find('a[href^="#"]').filter((i, el) => el.hash);
+            },
+
+            elements() {
+                return this.closest ? this.links.closest(this.closest) : this.links;
+            },
+
+            targets() {
+                return $(this.links.toArray().map(el => el.hash).join(','));
+            }
+
+        },
+
         update: [
 
             {
 
                 read() {
-                    this.links = this.$el.find('a[href^="#"]').filter((i, el) => el.hash);
-                    this.elements = (this.closest ? this.links.closest(this.closest) : this.links);
-                    this.targets = $($.map(this.links, (el) => el.hash).join(','));
-
                     if (this.scroll) {
-                        this.links.each((_, el) => UIkit.scroll(el, {offset: this.offset || 0}));
+                        UIkit.scroll(this.links, {offset: this.offset || 0});
                     }
                 }
 
@@ -40,7 +52,7 @@ export default function (UIkit) {
 
                 read() {
 
-                    var scroll = window.pageYOffset + this.offset, max = document.documentElement.scrollHeight - window.innerHeight + this.offset;
+                    var scroll = window.pageYOffset + this.offset, max = docHeight() - window.innerHeight + this.offset;
 
                     this.active = false;
 
@@ -86,7 +98,7 @@ export default function (UIkit) {
 
                 },
 
-                events: ['scroll', 'load', 'resize', 'orientationchange']
+                events: ['scroll', 'load', 'resize']
 
             }
 

@@ -1,4 +1,4 @@
-import { $, camelize, isJQuery, isPlainObject, isString } from '../util/index';
+import { $, camelize, fastdom, isJQuery, isPlainObject, isUndefined } from '../util/index';
 
 export default function (UIkit) {
 
@@ -13,6 +13,8 @@ export default function (UIkit) {
         if (isPlainObject(options)) {
             options.name = name;
             options = UIkit.extend(options);
+        } else if (isUndefined(options)) {
+            return UIkit.components[name]
         } else {
             options.options.name = name;
         }
@@ -29,18 +31,16 @@ export default function (UIkit) {
                 return new UIkit.components[name]({data: [...arguments]});
             }
 
-            data = data || {};
-            element = isString
-                ? $(element)[0]
-                : isJQuery(element)
-                    ? element[0]
-                    : element;
+            return element && element.nodeType ? init(element) : $(element).toArray().map(init)[0];
 
-            return element && element[DATA] && element[DATA][name] || new UIkit.components[name]({el: element, data});
+            function init(element) {
+                return UIkit.getComponent(element, name) || new UIkit.components[name]({el: element, data: data || {}});
+            }
+
         };
 
-        if (document.body && !options.options.functional) {
-            $(`[uk-${id}],[data-uk-${id}]`).each((_, el) => UIkit[name](el));
+        if (UIkit._initialized && !options.options.functional) {
+            fastdom.measure(() => UIkit[name](`[uk-${id}],[data-uk-${id}]`));
         }
 
         return UIkit.components[name];

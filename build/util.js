@@ -11,7 +11,6 @@ var json = require('rollup-plugin-json');
 var buble = require('rollup-plugin-buble');
 var replace = require('rollup-plugin-replace');
 var alias = require('rollup-plugin-import-alias');
-var resolve = require('rollup-plugin-node-resolve');
 var version = require('../package.json').version;
 var banner = `/*! UIkit ${version} | http://www.getuikit.com | (c) 2014 - 2017 YOOtheme | MIT License */\n`;
 
@@ -75,7 +74,7 @@ exports.minify = function (file) {
 
 exports.uglify = function (file) {
     file = path.join(path.dirname(file), path.basename(file, '.js'));
-    return exports.write(`${file}.min.js`, `${exports.banner}\n${uglify.minify(`${file}.js`).code}`);
+    return exports.write(`${file}.min.js`, uglify.minify(fs.readFileSync(`${file}.js`).toString(), {output: {preamble: exports.banner}}).code);
 };
 
 exports.renderLess = function (data, options) {
@@ -108,13 +107,14 @@ exports.compile = function (file, dest, external, globals, name, aliases, bundle
             buble(),
         ]
     })
-        .then(bundle => exports.write(`${dest}.js`, bundle.generate({
+        .then(bundle => bundle.generate({
             globals,
             format: 'umd',
             banner: exports.banner,
-            moduleId: `UIkit${name}`.toLowerCase(),
-            moduleName: `UIkit${exports.ucfirst(name)}`,
-        }).code))
+            amd: {id: `UIkit${name}`.toLowerCase()},
+            moduleName: `UIkit${exports.ucfirst(name)}`
+        }))
+        .then(({code}) => exports.write(`${dest}.js`, code.replace(/(>)\\n\s+|\\n\s+(<)/g, '$1$2')))
         .then(exports.uglify)
         .catch(console.log);
 };

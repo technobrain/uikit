@@ -1,21 +1,13 @@
-import { Position, Toggable } from '../mixin/index';
-import { doc, getDimensions, isWithin, isTouch, MouseTracker, pointerEnter, pointerLeave, query, removeClass } from '../util/index';
+import { Position, Togglable } from '../mixin/index';
+import { $, Animation, doc, getDimensions, isWithin, isTouch, MouseTracker, pointerEnter, pointerLeave, query, removeClass } from '../util/index';
 
 export default function (UIkit) {
 
     var active;
 
-    doc.on('click', e => {
-        var prev;
-        while (active && active !== prev && !isWithin(e.target, active.$el) && (!active.toggle || !isWithin(e.target, active.toggle.$el))) {
-            prev = active;
-            active.hide(false);
-        }
-    });
-
     UIkit.component('drop', {
 
-        mixins: [Position, Toggable],
+        mixins: [Position, Togglable],
 
         args: 'pos',
 
@@ -47,7 +39,7 @@ export default function (UIkit) {
             this.clsDrop = this.clsDrop || `uk-${this.$options.name}`;
             this.clsPos = this.clsDrop;
 
-            this.$el.addClass(this.clsDrop);
+            this.$addClass(this.clsDrop);
         },
 
         ready() {
@@ -116,7 +108,7 @@ export default function (UIkit) {
 
                     e.preventDefault();
 
-                    if (this.isToggled(this.$el)) {
+                    if (this.isToggled()) {
                         this.hide(false);
                     } else {
                         this.show(toggle, false);
@@ -157,7 +149,7 @@ export default function (UIkit) {
 
             {
 
-                name: 'toggleShow',
+                name: 'toggleshow',
 
                 handler(e, toggle) {
 
@@ -173,7 +165,7 @@ export default function (UIkit) {
 
             {
 
-                name: `toggleHide ${pointerLeave}`,
+                name: `togglehide ${pointerLeave}`,
 
                 handler(e, toggle) {
 
@@ -211,6 +203,7 @@ export default function (UIkit) {
                 handler() {
                     this.tracker.init();
                     this.toggle.$el.addClass(this.cls).attr('aria-expanded', 'true');
+                    registerEvent();
                 }
 
             },
@@ -234,7 +227,7 @@ export default function (UIkit) {
                 handler({target}) {
 
                     if (!this.$el.is(target)) {
-                        active = active === null && isWithin(target, this.$el) && this.isToggled(this.$el) ? this : active;
+                        active = active === null && isWithin(target, this.$el) && this.isToggled() ? this : active;
                         return;
                     }
 
@@ -251,32 +244,13 @@ export default function (UIkit) {
 
             write() {
 
-                if (!this.$el.hasClass(this.cls)) {
-                    return;
+                if (this.isToggled() && !Animation.inProgress(this.$el)) {
+                    this.position();
                 }
-
-                removeClass(this.$el, `${this.clsDrop}-(stack|boundary)`).css({top: '', left: ''});
-
-                this.$el.toggleClass(`${this.clsDrop}-boundary`, this.boundaryAlign);
-
-                this.dir = this.pos[0];
-                this.align = this.pos[1];
-
-                var boundary = getDimensions(this.boundary), alignTo = this.boundaryAlign ? boundary : getDimensions(this.toggle.$el);
-
-                if (this.align === 'justify') {
-                    var prop = this.getAxis() === 'y' ? 'width' : 'height';
-                    this.$el.css(prop, alignTo[prop]);
-                } else if (this.$el.outerWidth() > Math.max(boundary.right - alignTo.left, alignTo.right - boundary.left)) {
-                    this.$el.addClass(`${this.clsDrop}-stack`);
-                    this.$el.trigger('stack', [this]);
-                }
-
-                this.positionAt(this.$el, this.boundaryAlign ? this.boundary : this.toggle.$el, this.boundary);
 
             },
 
-            events: ['resize', 'orientationchange']
+            events: ['resize']
 
         },
 
@@ -284,42 +258,49 @@ export default function (UIkit) {
 
             show(toggle, delay = true) {
 
-                var show = () => !this.isToggled(this.$el) && this.toggleElement(this.$el, true),
+                var show = () => {
+                        if (!this.isToggled()) {
+                            this.position();
+                            this.toggleElement(this.$el, true);
+                        }
+                    },
                     tryShow = () => {
 
-                    this.toggle = toggle || this.toggle;
+                        this.toggle = toggle || this.toggle;
 
-                    this.clearTimers();
+                        this.clearTimers();
 
-                    if (this.isActive()) {
-                        return;
-                    } else if (delay && active && active !== this && active.isDelaying) {
-                        this.showTimer = setTimeout(this.show, 10);
-                        return;
-                    } else if (this.isParentOf(active)) {
-
-                        if (active.hideTimer) {
-                            active.hide(false);
-                        } else {
+                        if (this.isActive()) {
                             return;
+                        } else if (delay && active && active !== this && active.isDelaying) {
+                            this.showTimer = setTimeout(this.show, 10);
+                            return;
+                        } else if (this.isParentOf(active)) {
+
+                            if (active.hideTimer) {
+                                active.hide(false);
+                            } else {
+                                return;
+                            }
+
+                        } else if (active && !this.isChildOf(active) && !this.isParentOf(active)) {
+
+                            var prev;
+                            while (active && active !== prev && !this.isChildOf(active)) {
+                                prev = active;
+                                active.hide(false);
+                            }
+
                         }
 
-                    } else if (active && !this.isChildOf(active) && !this.isParentOf(active)) {
-                        var prev;
-                        while (active && active !== prev) {
-                            prev = active;
-                            active.hide(false);
+                        if (delay && this.delayShow) {
+                            this.showTimer = setTimeout(show, this.delayShow);
+                        } else {
+                            show();
                         }
-                    }
 
-                    if (delay && this.delayShow) {
-                        this.showTimer = setTimeout(show, this.delayShow);
-                    } else {
-                        show();
-                    }
-
-                    active = this;
-                };
+                        active = this;
+                    };
 
                 if (toggle && this.toggle && !this.toggle.$el.is(toggle.$el)) {
 
@@ -366,6 +347,28 @@ export default function (UIkit) {
 
             isParentOf(drop) {
                 return drop && drop !== this && isWithin(drop.$el, this.$el);
+            },
+
+            position() {
+
+                removeClass(this.$el, `${this.clsDrop}-(stack|boundary)`).css({top: '', left: ''});
+
+                this.$el.show().toggleClass(`${this.clsDrop}-boundary`, this.boundaryAlign);
+
+                var boundary = getDimensions(this.boundary), alignTo = this.boundaryAlign ? boundary : getDimensions(this.toggle.$el);
+
+                if (this.align === 'justify') {
+                    var prop = this.getAxis() === 'y' ? 'width' : 'height';
+                    this.$el.css(prop, alignTo[prop]);
+                } else if (this.$el.outerWidth() > Math.max(boundary.right - alignTo.left, alignTo.right - boundary.left)) {
+                    this.$addClass(`${this.clsDrop}-stack`);
+                    this.$el.trigger('stack', [this]);
+                }
+
+                this.positionAt(this.$el, this.boundaryAlign ? this.boundary : this.toggle.$el, this.boundary);
+
+                this.$el[0].style.display = '';
+
             }
 
         }
@@ -373,4 +376,22 @@ export default function (UIkit) {
     });
 
     UIkit.drop.getActive = () => active;
+
+    var registered;
+    function registerEvent() {
+
+        if (registered) {
+            return;
+        }
+
+        registered = true;
+        doc.on('click', e => {
+            var prev;
+            while (active && active !== prev && !isWithin(e.target, active.$el) && !(active.toggle && isWithin(e.target, active.toggle.$el))) {
+                prev = active;
+                active.hide(false);
+            }
+        });
+    }
+
 }

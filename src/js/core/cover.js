@@ -1,5 +1,5 @@
 import { Class } from '../mixin/index';
-import { Dimensions } from '../util/index';
+import { Dimensions, Player } from '../util/index';
 
 export default function (UIkit) {
 
@@ -8,49 +8,54 @@ export default function (UIkit) {
         mixins: [Class],
 
         props: {
-            automute: Boolean,
             width: Number,
             height: Number
         },
 
-        defaults: {automute: true},
+        computed: {
+
+            el() {
+                return this.$el[0];
+            },
+
+            parent() {
+                return this.el.parentNode;
+            }
+
+        },
 
         ready() {
 
-            if (!this.$el.is('iframe')) {
-                return;
+            if (this.$el.is('iframe')) {
+                this.$el.css('pointerEvents', 'none');
             }
 
-            this.$el.css('pointerEvents', 'none');
+            var player = new Player(this.$el);
 
-            if (this.automute) {
-
-                var src = this.$el.attr('src');
-
-                this.$el
-                    .attr('src', `${src}${~src.indexOf('?') ? '&' : '?'}enablejsapi=1&api=1`)
-                    .on('load', ({target}) => target.contentWindow.postMessage('{"event": "command", "func": "mute", "method":"setVolume", "value":0}', '*'));
+            if (player.isVideo()) {
+                player.mute();
             }
+
         },
 
         update: {
 
             write() {
 
-                if (this.$el[0].offsetHeight === 0) {
+                if (this.el.offsetHeight === 0) {
                     return;
                 }
 
                 this.$el
                     .css({width: '', height: ''})
                     .css(Dimensions.cover(
-                        {width: this.width || this.$el.width(), height: this.height || this.$el.height()},
-                        {width: this.$el.parent().outerWidth(), height: this.$el.parent().outerHeight()}
+                        {width: this.width || this.el.clientWidth, height: this.height || this.el.clientHeight},
+                        {width: this.parent.offsetWidth, height: this.parent.offsetHeight}
                     ));
 
             },
 
-            events: ['load', 'resize', 'orientationchange']
+            events: ['load', 'resize']
 
         },
 

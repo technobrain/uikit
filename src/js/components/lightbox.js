@@ -1,53 +1,50 @@
+import Slideshow from '../mixin/slideshow';
+
 function plugin(UIkit) {
 
     if (plugin.installed) {
         return;
     }
 
-    var {$, doc, extend, Dimensions, getIndex, Transition} = UIkit.util;
-    var active;
+    UIkit.use(Slideshow);
 
-    doc.on({
-        keydown: e => {
-            if (active) {
-                switch (e.keyCode) {
-                    case 37:
-                        active.show('previous');
-                        break;
-                    case 39:
-                        active.show('next');
-                        break;
-                }
-            }
-        }
-    });
+    var {mixin, util} = UIkit;
+    var {$, $trigger, Animation, ajax, assign, doc, docElement, getData, getImage, pointerDown, pointerMove, Transition} = util;
 
     UIkit.component('lightbox', {
 
-        name: 'lightbox',
+        attrs: true,
 
         props: {
-            toggle: String,
-            duration: Number,
-            inverse: Boolean
+            animation: String,
+            toggle: String
         },
 
         defaults: {
-            toggle: 'a',
-            duration: 400,
-            dark: false,
-            attrItem: 'uk-lightbox-item',
-            items: [],
-            index: 0
+            animation: undefined,
+            toggle: 'a'
         },
 
-        ready() {
+        computed: {
 
-            this.toggles = $(this.toggle, this.$el).each((_, el) => this.items.push({
-                source: el.getAttribute('href'),
-                title: el.getAttribute('title'),
-                type: el.getAttribute('type')
-            }));
+            toggles() {
+                var toggles = $(this.toggle, this.$el);
+
+                this._changed = !this._toggles
+                    || toggles.length !== this._toggles.length
+                    || toggles.toArray().some((el, i) => el !== this._toggles.get(i));
+
+                return this._toggles = toggles;
+            }
+
+        },
+
+        disconnected() {
+
+            if (this.panel) {
+                this.panel.$destroy(true);
+                this.panel = null;
+            }
 
         },
 
@@ -63,261 +60,453 @@ function plugin(UIkit) {
 
                 handler(e) {
                     e.preventDefault();
-                    this.show(this.toggles.index(e.currentTarget));
-                }
-
-            },
-
-            {
-
-                name: 'showitem',
-
-                handler(e) {
-
-                    var item = this.getItem();
-
-                    if (item.content) {
-                        this.$update();
-                        e.stopImmediatePropagation();
-                    }
+                    this.show(this.toggles.index($(e.currentTarget).blur()));
                 }
 
             }
 
         ],
 
-        update: {
+        update() {
 
-            write() {
+            if (this.panel && this.animation) {
+                this.panel.$props.animation = this.animation;
+                this.panel.$emit();
+            }
 
-                var item = this.getItem();
+            if (!this.toggles.length || !this._changed || !this.panel) {
+                return;
+            }
 
-                if (!this.modal || !item.content) {
-                    return;
-                }
-
-                var panel = this.modal.panel,
-                    dim = {width: panel.width(), height: panel.height()},
-                    max = {
-                        width: window.innerWidth - (panel.outerWidth(true) - dim.width),
-                        height: window.innerHeight - (panel.outerHeight(true) - dim.height)
-                    },
-                    newDim = Dimensions.fit({width: item.width, height: item.height}, max);
-
-                Transition.stop(panel);
-                Transition.stop(this.modal.content);
-
-                if (this.modal.content) {
-                    this.modal.content.remove();
-                }
-
-                this.modal.content = $(item.content).css('opacity', 0).appendTo(panel);
-                panel.css(dim);
-
-                Transition.start(panel, newDim, this.duration).then(() => {
-                    Transition.start(this.modal.content, {opacity: 1}, 400).then(() => {
-                        panel.find('[uk-transition-hide]').show();
-                        panel.find('[uk-transition-show]').hide();
-                    });
-                });
-
-            },
-
-            events: ['resize', 'orientationchange']
+            this.panel.$destroy(true);
+            this._init();
 
         },
 
         methods: {
 
+            _init() {
+                return this.panel = this.panel || UIkit.lightboxPanel({
+                        animation: this.animation,
+                        items: this.toggles.toArray().reduce((items, el) => {
+                            items.push(['href', 'caption', 'type'].reduce((obj, attr) => {
+                                obj[attr === 'href' ? 'source' : attr] = getData(el, attr);
+                                return obj;
+                            }, {}));
+                            return items;
+                        }, [])
+                    });
+            },
+
             show(index) {
 
-                this.index = getIndex(index, this.items, this.index);
-
-                if (!this.modal) {
-                    this.modal = UIkit.modal.dialog(`
-                    <button class="uk-modal-close-outside" uk-transition-hide type="button" uk-close></button>
-                    <span class="uk-position-center" uk-transition-show uk-icon="icon: trash"></span>
-                    `, {center: true});
-                    this.modal.$el.css('overflow', 'hidden').addClass('uk-modal-lightbox');
-                    this.modal.panel.css({width: 200, height: 200});
-                    this.modal.caption = $('<div class="uk-modal-caption" uk-transition-hide></div>').appendTo(this.modal.panel);
-
-                    if (this.items.length > 1) {
-                        $(`<div class="${this.dark ? 'uk-dark' : 'uk-light'}" uk-transition-hide>
-                            <a href="#" class="uk-position-center-left" uk-slidenav-previous uk-lightbox-item="previous"></a>
-                            <a href="#" class="uk-position-center-right" uk-slidenav-next uk-lightbox-item="next"></a>
-                        </div>
-                    `).appendTo(this.modal.panel.addClass('uk-slidenav-position'));
-                    }
-
-                    this.modal.$el
-                        .on('hide', this.hide)
-                        .on('click', `[${this.attrItem}]`, e => {
-                            e.preventDefault();
-                            this.show($(e.currentTarget).attr(this.attrItem));
-                        }).on('swipeRight swipeLeft', e => {
-                        e.preventDefault();
-                        if (!window.getSelection().toString()) {
-                            this.show(e.type == 'swipeLeft' ? 'next' : 'previous');
-                        }
-                    });
+                if (!this.panel) {
+                    this._init();
                 }
 
-                active = this;
+                return this.panel.show(index);
 
-                this.modal.panel.find('[uk-transition-hide]').hide();
-                this.modal.panel.find('[uk-transition-show]').show();
-
-                this.modal.content && this.modal.content.remove();
-                this.modal.caption.text(this.getItem().title);
-
-                var event = $.Event('showitem');
-                this.$el.trigger(event);
-                if (!event.isImmediatePropagationStopped()) {
-                    this.setError(this.getItem());
-                }
             },
 
             hide() {
 
-                active = active && active !== this && active;
+                return this.panel && this.panel.hide();
 
-                this.modal.hide().then(() => {
-                    this.modal.$destroy(true);
-                    this.modal = null;
-                });
-            },
-
-            getItem() {
-                return this.items[this.index] || {source: '', title: '', type: ''};
-            },
-
-            setItem(item, content, width = 200, height = 200) {
-                extend(item, {content, width, height});
-                this.$update();
-            },
-
-            setError(item) {
-                this.setItem(item, '<div class="uk-position-cover uk-flex uk-flex-middle uk-flex-center"><strong>Loading resource failed!</strong></div>', 400, 300);
             }
 
         }
 
     });
 
-    UIkit.mixin({
+    UIkit.component('lightbox-panel', {
 
-        events: {
+        mixins: [mixin.togglable, mixin.slideshow],
 
-            showitem(e) {
+        functional: true,
 
-                let item = this.getItem();
+        defaults: {
+            preload: 1,
+            delayControls: 3000,
+            items: [],
+            cls: 'uk-open',
+            clsPage: 'uk-lightbox-page',
+            clsItem: 'uk-lightbox-item',
+            attrItem: 'uk-lightbox-item',
+            template: `
+                <div class="uk-lightbox uk-overflow-hidden">
+                    <ul class="uk-lightbox-items"></ul>
+                    <div class="uk-lightbox-toolbar uk-position-top uk-text-right">
+                        <button class="uk-lightbox-toolbar-icon uk-close-large" type="button" uk-close uk-toggle="!.uk-lightbox"></button>
+                     </div>
+                    <a class="uk-lightbox-button uk-position-center-left uk-position-medium" href="#" uk-slidenav-previous uk-lightbox-item="previous"></a>
+                    <a class="uk-lightbox-button uk-position-center-right uk-position-medium" href="#" uk-slidenav-next uk-lightbox-item="next"></a>
+                    <div class="uk-lightbox-toolbar uk-lightbox-caption uk-position-bottom uk-text-center"></div>
+                </div>`
+        },
 
-                if (item.type !== 'image' && item.source && !item.source.match(/\.(jp(e)?g|png|gif|svg)$/i)) {
-                    return;
-                }
+        computed: {
 
-                var img = new Image();
-
-                img.onerror = () => this.setError(item);
-                img.onload = () => this.setItem(item, `<img class="uk-responsive-width" width="${img.width}" height="${img.height}" src ="${item.source}">`, img.width, img.height);
-
-                img.src = item.source;
-
-                e.stopImmediatePropagation();
+            container() {
+                return $(this.$props.container === true && UIkit.container || this.$props.container || UIkit.container);
             }
 
-        }
+        },
 
-    }, 'lightbox');
+        created() {
 
-    UIkit.mixin({
+            this.$mount($(this.template).appendTo(this.container)[0]);
 
-        events: {
+            this.list = this.$el.find('.uk-lightbox-items');
+            this.toolbars = this.$el.find('.uk-lightbox-toolbar');
+            this.nav = this.$el.find('a[uk-lightbox-item]');
+            this.caption = this.$el.find('.uk-lightbox-caption');
 
-            showitem(e) {
+            this.items.forEach((el, i) => this.list.append(`<li class="${this.clsItem} item-${i}"></li>`));
 
-                let item = this.getItem();
+        },
 
-                if (item.type !== 'video' && item.source && !item.source.match(/\.(mp4|webm|ogv)$/i)) {
-                    return;
+        events: [
+
+            {
+
+                name: `${pointerMove} ${pointerDown} keydown`,
+
+                handler: 'showControls'
+
+            },
+
+            {
+
+                name: 'click',
+
+                self: true,
+
+                handler(e) {
+                    e.preventDefault();
+                    this.hide();
                 }
 
-                var video = $('<video class="uk-responsive-width" controls></video>')
-                    .on('loadedmetadata', () => this.setItem(item, video.attr({width: video[0].videoWidth, height: video[0].videoHeight}), video[0].videoWidth, video[0].videoHeight))
-                    .attr('src', item.source);
+            },
 
-                e.stopImmediatePropagation();
-            }
+            {
 
-        }
+                name: 'click',
 
-    }, 'lightbox');
+                self: true,
 
-    UIkit.mixin({
+                delegate() {
+                    return `.${this.clsItem}`;
+                },
 
-        events: {
-
-            showitem(e) {
-
-                let item = this.getItem(), matches;
-
-                if (!(matches = item.source.match(/\/\/.*?youtube\.[a-z]+\/watch\?v=([^&]+)&?(.*)/)) && !(item.source.match(/youtu\.be\/(.*)/))) {
-                    return;
+                handler(e) {
+                    e.preventDefault();
+                    this.hide();
                 }
 
-                let id = matches[1],
-                    img = new Image(),
-                    lowres = false,
-                    setIframe = (width, height) => this.setItem(item, `<iframe src="//www.youtube.com/embed/${id}" width="${width}" height="${height}" style="max-width:100%;box-sizing:border-box;"></iframe>`, width, height);
+            },
 
-                img.onerror = () => setIframe(640, 320);
-                img.onload = () => {
-                    //youtube default 404 thumb, fall back to lowres
-                    if (img.width === 120 && img.height === 90) {
-                        if (!lowres) {
-                            lowres = true;
-                            img.src = `//img.youtube.com/vi/${id}/0.jpg`;
-                        } else {
-                            setIframe(640, 320);
-                        }
-                    } else {
-                        setIframe(img.width, img.height);
+            {
+
+                name: 'show',
+
+                self: true,
+
+                handler() {
+
+                    this.$addClass(docElement, this.clsPage);
+
+                }
+            },
+
+            {
+
+                name: 'shown',
+
+                self: true,
+
+                handler() {
+
+                    this.$addClass(this.caption, 'uk-animation-slide-bottom');
+                    this.toolbars.attr('hidden', true);
+                    this.nav.attr('hidden', true);
+                    this.showControls();
+
+                }
+            },
+
+            {
+
+                name: 'hide',
+
+                self: true,
+
+                handler() {
+
+                    this.$removeClass(this.caption, 'uk-animation-slide-bottom');
+                    this.toolbars.attr('hidden', true);
+                    this.nav.attr('hidden', true);
+
+                }
+            },
+
+            {
+
+                name: 'hidden',
+
+                self: true,
+
+                handler() {
+
+                    this.$removeClass(docElement, this.clsPage);
+
+                }
+            },
+
+            {
+
+                name: 'keydown',
+
+                el() {
+                    return doc;
+                },
+
+                handler(e) {
+
+                    if (!this.isToggled(this.$el)) {
+                        return;
                     }
-                };
 
-                img.src = `//img.youtube.com/vi/${id}/maxresdefault.jpg`;
+                    switch (e.keyCode) {
+                        case 27:
+                            this.hide();
+                            break;
+                        case 37:
+                            this.show('previous');
+                            break;
+                        case 39:
+                            this.show('next');
+                            break;
+                    }
+                }
+            },
 
-                e.stopImmediatePropagation();
+            {
+
+                name: 'toggle',
+
+                handler(e) {
+                    e.preventDefault();
+                    this.toggle();
+                }
+
+            },
+
+            {
+
+                name: 'beforeitemshow',
+
+                self: true,
+
+                handler() {
+                    if (!this.isToggled()) {
+                        this.toggleNow(this.$el, true);
+                    }
+                }
+
+            },
+
+            {
+
+                name: 'itemshow',
+
+                self: true,
+
+                handler() {
+
+                    var caption = this.getItem().caption;
+                    this.caption.toggle(!!caption).html(caption);
+
+                    for (var i = 0; i <= this.preload; i++) {
+                        this.loadItem(this.getIndex(this.index + i));
+                        this.loadItem(this.getIndex(this.index - i));
+                    }
+
+                }
+
+            },
+
+            {
+
+                name: 'itemload',
+
+                handler(_, item) {
+
+                    var {source, type} = item, matches;
+
+                    this.setItem(item, '<span uk-spinner></span>');
+
+                    if (!source) {
+                        return;
+                    }
+
+                    // Image
+                    if (type === 'image' || source.match(/\.(jp(e)?g|png|gif|svg)$/i)) {
+
+                        getImage(source).then(
+                            img => this.setItem(item, `<img width="${img.width}" height="${img.height}" src="${source}">`),
+                            () => this.setError(item)
+                        );
+
+                    // Video
+                    } else if (type === 'video' || source.match(/\.(mp4|webm|ogv)$/i)) {
+
+                        var video = $('<video controls playsinline uk-video></video>')
+                            .on('loadedmetadata', () => this.setItem(item, video.attr({width: video[0].videoWidth, height: video[0].videoHeight})))
+                            .on('error', () => this.setError(item))
+                            .attr('src', source);
+
+                    // Iframe
+                    } else if (type === 'iframe') {
+
+                        this.setItem(item, `<iframe class="uk-lightbox-iframe" src="${source}" frameborder="0" allowfullscreen></iframe>`);
+
+                    // Youtube
+                    } else if (matches = source.match(/\/\/.*?youtube\.[a-z]+\/watch\?v=([^&\s]+)/) || source.match(/youtu\.be\/(.*)/)) {
+
+                        var id = matches[1],
+                            setIframe = (width = 640, height = 450) => this.setItem(item, getIframe(`//www.youtube.com/embed/${id}`, width, height));
+
+                        getImage(`//img.youtube.com/vi/${id}/maxresdefault.jpg`).then(
+                            img => {
+                                //youtube default 404 thumb, fall back to lowres
+                                if (img.width === 120 && img.height === 90) {
+                                    getImage(`//img.youtube.com/vi/${id}/0.jpg`).then(
+                                        img => setIframe(img.width, img.height),
+                                        setIframe
+                                    );
+                                } else {
+                                    setIframe(img.width, img.height);
+                                }
+                            },
+                            setIframe
+                        );
+
+                    // Vimeo
+                    } else if (matches = source.match(/(\/\/.*?)vimeo\.[a-z]+\/([0-9]+).*?/)) {
+
+                        ajax({type: 'GET', url: `//vimeo.com/api/oembed.json?url=${encodeURI(source)}`, jsonp: 'callback', dataType: 'jsonp'})
+                            .then(({height, width}) => this.setItem(item, getIframe(`//player.vimeo.com/video/${matches[2]}`, width, height)));
+
+                    } else {
+
+                        return;
+
+                    }
+
+                    return true;
+
+                }
+
             }
 
-        }
+        ],
 
-    }, 'lightbox');
+        methods: {
 
-    UIkit.mixin({
+            toggle() {
+                return this.isToggled() ? this.hide() : this.show();
+            },
 
-        events: {
+            hide() {
 
-            showitem(e) {
+                if (this.isToggled()) {
+                    this.toggleNow(this.$el, false);
+                }
 
-                let item = this.getItem(), matches;
+                this.slides
+                    .removeClass(this.clsActive)
+                    .each((_, el) => Transition.stop(el));
 
-                if (!(matches = item.source.match(/(\/\/.*?)vimeo\.[a-z]+\/([0-9]+).*?/))) {
+                delete this.index;
+                delete this.percent;
+                delete this._animation;
+
+            },
+
+            loadItem(index = this.index) {
+
+                var item = this.getItem(index);
+
+                if (item.content) {
                     return;
                 }
 
-                let id = matches[2],
-                    setIframe = (width, height) => this.setItem(item, `<iframe src="//player.vimeo.com/video/${id}" width="${width}" height="${height}" style="max-width:100%;box-sizing:border-box;"></iframe>`, width, height);
+                if (!$trigger(this.$el, 'itemload', [item], true).result) {
+                    this.setError(item);
+                }
+            },
 
-                $.ajax({type: 'GET', url: `http://vimeo.com/api/oembed.json?url=${encodeURI(item.source)}`, jsonp: 'callback', dataType: 'jsonp'}).then((res) => setIframe(res.width, res.height));
+            getItem(index = this.index) {
+                return this.items[index] || {};
+            },
 
-                e.stopImmediatePropagation();
+            setItem(item, content) {
+                assign(item, {content});
+                var el = this.slides.eq(this.items.indexOf(item)).html(content);
+                this.$el.trigger('itemloaded', [this, el]);
+                UIkit.update(null, el);
+            },
+
+            setError(item) {
+                this.setItem(item, '<span uk-icon="icon: bolt; ratio: 2"></span>');
+            },
+
+            showControls() {
+
+                clearTimeout(this.controlsTimer);
+                this.controlsTimer = setTimeout(this.hideControls, this.delayControls);
+
+                if (!this.toolbars.attr('hidden')) {
+                    return;
+                }
+
+                animate(this.toolbars.eq(0), 'uk-animation-slide-top');
+                animate(this.toolbars.eq(1), 'uk-animation-slide-bottom');
+
+                this.nav.attr('hidden', this.items.length <= 1);
+
+                if (this.items.length > 1) {
+                    animate(this.nav, 'uk-animation-fade');
+                }
+
+            },
+
+            hideControls() {
+
+                if (this.toolbars.attr('hidden')) {
+                    return;
+                }
+
+                animate(this.toolbars.eq(0), 'uk-animation-slide-top', 'out');
+                animate(this.toolbars.eq(1), 'uk-animation-slide-bottom', 'out');
+
+                if (this.items.length > 1) {
+                    animate(this.nav, 'uk-animation-fade', 'out');
+                }
+
             }
 
         }
 
-    }, 'lightbox');
+    });
+
+    function animate(el, animation, dir = 'in') {
+        el.each(i => Animation[dir](el.eq(i).attr('hidden', false), animation).then(() => { dir === 'out' && el.eq(i).attr('hidden', true)}));
+    }
+
+    function getIframe(src, width, height) {
+        return `<iframe src="${src}" width="${width}" height="${height}" style="max-width: 100%; box-sizing: border-box;" uk-video uk-responsive></iframe>`;
+    }
 
 }
 

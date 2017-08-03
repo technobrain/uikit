@@ -1,8 +1,8 @@
-/*! UIkit 3.0.0-beta.18 | http://www.getuikit.com | (c) 2014 - 2017 YOOtheme | MIT License */
+/*! UIkit 3.0.0-beta.28 | http://www.getuikit.com | (c) 2014 - 2017 YOOtheme | MIT License */
 
 (function (global, factory) {
     typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
-    typeof define === 'function' && define.amd ? define('uikitupload', factory) :
+    typeof define === 'function' && define.amd ? define(factory) :
     (global.UIkitUpload = factory());
 }(this, (function () { 'use strict';
 
@@ -89,7 +89,7 @@ function plugin(UIkit) {
                     return;
                 }
 
-                this.$el.removeClass(this.clsDragover);
+                this.$removeClass(this.clsDragover);
 
                 this.upload(transfer.files);
             },
@@ -102,13 +102,13 @@ function plugin(UIkit) {
             dragover: function dragover(e) {
                 e.preventDefault();
                 e.stopPropagation();
-                this.$el.addClass(this.clsDragover);
+                this.$addClass(this.clsDragover);
             },
 
             dragleave: function dragleave(e) {
                 e.preventDefault();
                 e.stopPropagation();
-                this.$el.removeClass(this.clsDragover);
+                this.$removeClass(this.clsDragover);
             }
 
         },
