@@ -1,14 +1,14 @@
 /*! UIkit 3.0.0-beta.28 | http://www.getuikit.com | (c) 2014 - 2017 YOOtheme | MIT License */
 
 (function (global, factory) {
-    typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
-    typeof define === 'function' && define.amd ? define(factory) :
-    (global.UIkitLightbox = factory());
+	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
+	typeof define === 'function' && define.amd ? define('uikitlightbox', factory) :
+	(global.UIkitLightbox = factory());
 }(this, (function () { 'use strict';
 
-function plugin$1(UIkit) {
+function plugin$2(UIkit) {
 
-    if (plugin$1.installed) {
+    if (plugin$2.installed) {
         return;
     }
 
@@ -76,7 +76,7 @@ function plugin$1(UIkit) {
                     this$1.pos = (e.touches && e.touches[0] || e).pageX;
 
                     fn(e);
-                }
+                };
             });
         },
 
@@ -177,7 +177,7 @@ function plugin$1(UIkit) {
                 this.touch = {
                     el: el,
                     start: this.pos + (percent ? el.outerWidth() * percent : 0)
-                }
+                };
 
             },
 
@@ -353,7 +353,7 @@ function plugin$1(UIkit) {
                 this.stopAutoplay();
 
                 if (this.autoplay) {
-                    this.interval = setInterval(function () {!this$1.isHovering && this$1.show('next')}, this.autoplay);
+                    this.interval = setInterval(function () {!this$1.isHovering && this$1.show('next');}, this.autoplay);
                 }
 
             },
@@ -580,7 +580,7 @@ function plugin(UIkit) {
         return;
     }
 
-    UIkit.use(plugin$1);
+    UIkit.use(plugin$2);
 
     var mixin = UIkit.mixin;
     var util = UIkit.util;
@@ -1104,7 +1104,7 @@ function plugin(UIkit) {
     function animate(el, animation, dir) {
         if ( dir === void 0 ) dir = 'in';
 
-        el.each(function (i) { return Animation[dir](el.eq(i).attr('hidden', false), animation).then(function () { dir === 'out' && el.eq(i).attr('hidden', true)}); });
+        el.each(function (i) { return Animation[dir](el.eq(i).attr('hidden', false), animation).then(function () { dir === 'out' && el.eq(i).attr('hidden', true);}); });
     }
 
     function getIframe(src, width, height) {

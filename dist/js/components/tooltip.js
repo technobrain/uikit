@@ -1,9 +1,9 @@
 /*! UIkit 3.0.0-beta.28 | http://www.getuikit.com | (c) 2014 - 2017 YOOtheme | MIT License */
 
 (function (global, factory) {
-    typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
-    typeof define === 'function' && define.amd ? define(factory) :
-    (global.UIkitTooltip = factory());
+	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
+	typeof define === 'function' && define.amd ? define('uikittooltip', factory) :
+	(global.UIkitTooltip = factory());
 }(this, (function () { 'use strict';
 
 function plugin(UIkit) {
@@ -139,7 +139,7 @@ function plugin(UIkit) {
                 }
             }, obj[pointerLeave] = function (e) {
                 if (!isTouch(e)) {
-                    this.hide()
+                    this.hide();
                 }
             }, obj )
 

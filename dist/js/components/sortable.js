@@ -1,9 +1,9 @@
 /*! UIkit 3.0.0-beta.28 | http://www.getuikit.com | (c) 2014 - 2017 YOOtheme | MIT License */
 
 (function (global, factory) {
-    typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
-    typeof define === 'function' && define.amd ? define(factory) :
-    (global.UIkitSortable = factory());
+	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
+	typeof define === 'function' && define.amd ? define('uikitsortable', factory) :
+	(global.UIkitSortable = factory());
 }(this, (function () { 'use strict';
 
 function plugin(UIkit) {
@@ -78,7 +78,7 @@ function plugin(UIkit) {
                     this$1.pos = {x: x, y: y};
 
                     fn(e);
-                }
+                };
             });
         },
 

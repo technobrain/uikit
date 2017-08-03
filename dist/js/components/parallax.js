@@ -1,9 +1,9 @@
 /*! UIkit 3.0.0-beta.28 | http://www.getuikit.com | (c) 2014 - 2017 YOOtheme | MIT License */
 
 (function (global, factory) {
-    typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
-    typeof define === 'function' && define.amd ? define(factory) :
-    (global.UIkitParallax = factory());
+	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
+	typeof define === 'function' && define.amd ? define('uikitparallax', factory) :
+	(global.UIkitParallax = factory());
 }(this, (function () { 'use strict';
 
 function plugin(UIkit) {
@@ -140,7 +140,7 @@ function plugin(UIkit) {
                         this._image.dimEl = {
                             width: this.$el[0].offsetWidth,
                             height: this.$el[0].offsetHeight
-                        }
+                        };
                     }
 
                     if (!isUndefined(this._image) || !this.covers || !this.bgProps.length) {

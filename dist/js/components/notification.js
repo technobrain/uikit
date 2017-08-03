@@ -1,9 +1,9 @@
 /*! UIkit 3.0.0-beta.28 | http://www.getuikit.com | (c) 2014 - 2017 YOOtheme | MIT License */
 
 (function (global, factory) {
-    typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
-    typeof define === 'function' && define.amd ? define(factory) :
-    (global.UIkitNotification = factory());
+	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
+	typeof define === 'function' && define.amd ? define('uikitnotification', factory) :
+	(global.UIkitNotification = factory());
 }(this, (function () { 'use strict';
 
 function plugin(UIkit) {
@@ -109,7 +109,7 @@ function plugin(UIkit) {
                 if (immediate) {
                     remove();
                 } else {
-                    Transition.start(this.$el, {opacity: 0, marginTop: -1 * this.$el.outerHeight(), marginBottom: 0}).then(remove)
+                    Transition.start(this.$el, {opacity: 0, marginTop: -1 * this.$el.outerHeight(), marginBottom: 0}).then(remove);
                 }
             }
 
@@ -123,7 +123,7 @@ function plugin(UIkit) {
             if (component.$options.name === 'notification' && (!group || group === component.group)) {
                 component.close(immediate);
             }
-        })
+        });
     };
 
 }
