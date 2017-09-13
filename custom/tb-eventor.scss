@@ -3,8 +3,8 @@
 @import "tb-theme/variables.scss";
 @import "../src/scss/variables-theme.scss";
 
-// TB Theme
-@import "./tb-theme.scss";
-
 // Eventor Theme
 @import "tb-eventor/_import.scss";
+
+// TB Theme
+@import "./tb-theme.scss";
