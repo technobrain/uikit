@@ -21,8 +21,6 @@
     // Prevent line wrap
     margin-bottom: -2px;
 }
-@if(mixin-exists(hook-dropcap)) {@include hook-dropcap();}
-
 
 // Logo
 // ========================================================================
