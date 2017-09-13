@@ -1,6 +1,8 @@
+// Custom mixin
 // Theme
 @import "tb-theme/_import.scss";
 
-// Core
+// Import UIkit
 @import "../src/scss/mixins-theme.scss";
+// Core
 @import "../src/scss/uikit-theme.scss";

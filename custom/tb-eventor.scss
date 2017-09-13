@@ -1,8 +1,11 @@
-// Variables
+// Custom Variables
 @import "tb-eventor/variables.scss";
 @import "tb-theme/variables.scss";
+
+// Default Variables
 @import "../src/scss/variables-theme.scss";
 
+// Custom mixin
 // Eventor Theme
 @import "tb-eventor/_import.scss";
 
