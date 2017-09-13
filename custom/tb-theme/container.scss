@@ -11,6 +11,8 @@
 // Miscellaneous
 // ========================================================================
 
+@if(mixin-exists(hook-container-misc)) {@include hook-container-misc();}
+
 // @mixin hook-container-misc(){}
 @mixin hook-container-misc(){
   // new rule
