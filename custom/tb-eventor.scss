@@ -1,9 +1,10 @@
-@import "tb-eventor/variables.scss";
+// Variables
 @import "tb-theme/variables.scss";
+@import "tb-eventor/variables.scss";
 @import "../src/scss/variables-theme.scss";
 
-// Theme
-@import "tb-eventor/_import.scss";
-
-// Core
+// TB Theme
 @import "./tb-theme.scss";
+
+// Eventor Theme
+@import "tb-eventor/_import.scss";
