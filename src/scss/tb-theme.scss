@@ -10,7 +10,8 @@
 
 // Custom mixin
 @import "tb-theme/base-mixins.scss";
+@import "tb-theme/container-mixins.scss";
 
 // Dafault theme
-@import "mixins-theme.scss";
+// @import "mixins-theme.scss";
 @import "components/_import.scss";
