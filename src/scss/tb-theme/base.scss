@@ -8,6 +8,12 @@
 // ========================================================================
 
 //
+// TB
+//
+$base-selection-background:                     #9df;
+$base-selection-color:                          #1C3A38;
+
+//
 // New
 //
 
@@ -93,9 +99,10 @@ $base-pre-border-radius:                         3px !default;
 // Inverse
 // ========================================================================
 
+$inverse-global-color:                        rgba($global-inverse-color, 0.7) !default;
+$inverse-global-emphasis-color:                 $global-inverse-color !default;
 $inverse-base-blockquote-color:                 $inverse-global-emphasis-color !default;
 $inverse-base-blockquote-footer-color:          $inverse-global-color !default;
-$inverse-global-emphasis-color:                 $global-inverse-color !default;
 
 // @mixin hook-inverse-base-link(){}
 // @mixin hook-inverse-base-link-hover(){}
