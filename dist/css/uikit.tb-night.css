@@ -58,13 +58,13 @@ a:hover {
  */
 a,
 .uk-link {
-  color: #1e87f0;
+  color: #017577;
   text-decoration: none;
   cursor: pointer; }
 
 a:hover,
 .uk-link:hover {
-  color: #0f6ecd;
+  color: #065657;
   text-decoration: underline; }
 
 /* Text-level semantics
@@ -2029,12 +2029,12 @@ select.uk-form-width-xsmall {
   line-height: 1.5;
   background: none;
   /* 2 */
-  color: #1e87f0; }
+  color: #017577; }
 
 /* Hover + Focus */
 .uk-button-link:hover,
 .uk-button-link:focus {
-  color: #0f6ecd;
+  color: #065657;
   text-decoration: underline; }
 
 /* Disabled */
