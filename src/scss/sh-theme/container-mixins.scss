@@ -50,14 +50,14 @@
   /* Muted
   ========================================================================== */
 
-  .tb-sidebar-left-bottom+a.uk-link-muted,
-  .tb-sidebar-left-bottom+.uk-link-muted a {
+  .tb-sidebar-left-bottom a.uk-link-muted,
+  .tb-sidebar-left-bottom .uk-link-muted a {
       /* color: $link-muted-color; */
       color: $global-inverse-color;
       @if(mixin-exists(hook-link-muted)) {@include hook-link-muted();}
   }
 
-  .tb-sidebar-left-bottom+a.uk-link-muted:hover,
+  .tb-sidebar-left-bottom a.uk-link-muted:hover,
   .uk-link-muted a:hover {
       color: $link-muted-hover-color;
       @if(mixin-exists(hook-link-muted-hover)) {@include hook-link-muted-hover();}
@@ -71,14 +71,14 @@
   * `!important` needed to override inverse component
   */
 
-  .tb-sidebar-left-bottom+a.uk-link-text:not(:hover),
-  .tb-sidebar-left-bottom+.uk-link-text a:not(:hover) {
+  .tb-sidebar-left-bottom a.uk-link-text:not(:hover),
+  .tb-sidebar-left-bottom .uk-link-text a:not(:hover) {
       color: inherit !important;
       @if(mixin-exists(hook-link-text)) {@include hook-link-text();}
   }
 
-  .tb-sidebar-left-bottom+a.uk-link-text:hover,
-  .tb-sidebar-left-bottom+.uk-link-text a:hover {
+  .tb-sidebar-left-bottom a.uk-link-text:hover,
+  .tb-sidebar-left-bottom .uk-link-text a:hover {
       color: $link-text-hover-color;
       @if(mixin-exists(hook-link-text-hover)) {@include hook-link-text-hover();}
   }
