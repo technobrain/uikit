@@ -20,6 +20,10 @@
     background: linear-gradient(to left, #28a5f5, #1e87f0);
   }
 
+  .tb-navbar-container {
+    background-color: $global-primary-background;
+  }
+
   .tb-sidebar-left {
     position: fixed;
     top: 0;
