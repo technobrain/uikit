@@ -15,10 +15,10 @@
 @if(mixin-exists(hook-container-misc)) {@include hook-container-misc();}
 
 @mixin hook-container-misc(){
-  // new rule
-  .tb-navbar-container:not(.uk-navbar-transparent) {
-    background: linear-gradient(to left, #28a5f5, #1e87f0);
-  }
+  // // new rule
+  // .tb-navbar-container:not(.uk-navbar-transparent) {
+  //   background: linear-gradient(to left, #28a5f5, #1e87f0);
+  // }
 
   .tb-navbar-container {
     background-color: $global-primary-background;
