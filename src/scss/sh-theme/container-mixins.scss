@@ -52,8 +52,7 @@
 
   .tb-sidebar-left-bottom a.uk-link-muted,
   .tb-sidebar-left-bottom .uk-link-muted a {
-      /* color: $link-muted-color; */
-      color: $global-inverse-color;
+      color: $link-muted-color;
       @if(mixin-exists(hook-link-muted)) {@include hook-link-muted();}
   }
 
