@@ -8,8 +8,8 @@ export default function (UIkit) {
 
             show(dir) {
                 return [
-                    {transform: translate3d(dir * -100)},
-                    {transform: translate3d()}
+                    {transform: translate(dir * -100)},
+                    {transform: translate()}
                 ];
             },
 
@@ -19,25 +19,25 @@ export default function (UIkit) {
 
             translate(percent, dir) {
                 return [
-                    {transform: translate3d(dir * -100 * percent)},
-                    {transform: translate3d(dir * 100 * (1 - percent))}
+                    {transform: translate(dir * -100 * percent)},
+                    {transform: translate(dir * 100 * (1 - percent))}
                 ];
             }
 
         },
 
         translated(el) {
-            return Math.abs(css(el, 'transform').split(',')[4] / el.offsetWidth)
+            return Math.abs(css(el, 'transform').split(',')[4] / el.offsetWidth) || 0;
         }
 
     };
 
     return Animations;
 
-};
+}
 
-export function translate3d(value = 0) {
-    return `translate3d(${value}${value ? '%' : ''}, 0, 0)`;
+export function translate(value = 0, unit = '%') {
+    return `translate(${value}${value ? unit : ''}, 0)`; // currently not translate3d to support IE, translate3d within translate3d does not work while transitioning
 }
 
 export function scale3d(value) {
