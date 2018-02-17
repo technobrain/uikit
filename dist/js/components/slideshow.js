@@ -2,8 +2,8 @@
 
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
-	typeof define === 'function' && define.amd ? define('uikitlightbox', factory) :
-	(global.UIkitLightbox = factory());
+	typeof define === 'function' && define.amd ? define('uikitslideshow', factory) :
+	(global.UIkitSlideshow = factory());
 }(this, (function () { 'use strict';
 
 function AnimationsPlugin (UIkit) {
@@ -590,9 +590,9 @@ function NavMixin (UIkit) {
 
 }
 
-function plugin$4(UIkit) {
+function plugin$3(UIkit) {
 
-    if (plugin$4.installed) {
+    if (plugin$3.installed) {
         return;
     }
 
@@ -868,13 +868,13 @@ function speedUp(x) {
     return .5 * x + 300; // parabola through (400,500; 600,600; 1800,1200)
 }
 
-function plugin$3(UIkit) {
+function plugin$2(UIkit) {
 
-    if (plugin$3.installed) {
+    if (plugin$2.installed) {
         return;
     }
 
-    UIkit.use(plugin$4);
+    UIkit.use(plugin$3);
 
     var mixin = UIkit.mixin;
     var ref = UIkit.util;
@@ -939,14 +939,14 @@ function AnimationsPlugin$1 (UIkit) {
     var assign = ref.assign;
     var css = ref.css;
 
-    return assign({}, mixin.slideshow.defaults.Animations, {
+    var Animations = assign({}, mixin.slideshow.defaults.Animations, {
 
         fade: {
 
             show: function show() {
                 return [
-                    {opacity: 0},
-                    {opacity: 1}
+                    {opacity: 0, zIndex: 0},
+                    {zIndex: -1}
                 ];
             },
 
@@ -956,8 +956,8 @@ function AnimationsPlugin$1 (UIkit) {
 
             translate: function translate$$1(percent) {
                 return [
-                    {opacity: 1 - percent},
-                    {opacity: percent}
+                    {opacity: 1 - percent, zIndex: 0},
+                    {zIndex: -1}
                 ];
             }
 
@@ -967,8 +967,8 @@ function AnimationsPlugin$1 (UIkit) {
 
             show: function show() {
                 return [
-                    {opacity: 0, transform: scale3d(1 - .2)},
-                    {opacity: 1, transform: scale3d(1)}
+                    {opacity: 0, transform: scale3d(1 + .5), zIndex: 0},
+                    {zIndex: -1}
                 ];
             },
 
@@ -978,316 +978,304 @@ function AnimationsPlugin$1 (UIkit) {
 
             translate: function translate$$1(percent) {
                 return [
-                    {opacity: 1 - percent, transform: scale3d(1 - .2 * percent)},
-                    {opacity: percent, transform: scale3d(1 - .2 + .2 * percent)}
+                    {opacity: 1 - percent, transform: scale3d(1 + .5 * percent), zIndex: 0},
+                    {zIndex: -1}
                 ];
+            }
+
+        },
+
+        pull: {
+
+            show: function show(dir) {
+                return dir < 0
+                    ? [
+                        {transform: translate(30), zIndex: -1},
+                        {transform: translate(), zIndex: 0} ]
+                    : [
+                        {transform: translate(-100), zIndex: 0},
+                        {transform: translate(), zIndex: -1}
+                    ];
+            },
+
+            percent: function percent(current, next, dir) {
+                return dir < 0
+                    ? 1 - Animations.translated(next)
+                    : Animations.translated(current);
+            },
+
+            translate: function translate$1(percent, dir) {
+                return dir < 0
+                    ? [
+                        {transform: translate(30 * percent), zIndex: -1},
+                        {transform: translate(-100 * (1 - percent)), zIndex: 0} ]
+                    : [
+                        {transform: translate(-percent * 100), zIndex: 0},
+                        {transform: translate(30 * (1 - percent)), zIndex: -1}
+                    ];
+            }
+
+        },
+
+        push: {
+
+            show: function show(dir) {
+                return dir < 0
+                    ? [
+                        {transform: translate(100), zIndex: 0},
+                        {transform: translate(), zIndex: -1} ]
+                    : [
+                        {transform: translate(-30), zIndex: -1},
+                        {transform: translate(), zIndex: 0}
+                    ];
+            },
+
+            percent: function percent(current, next, dir) {
+                return dir > 0
+                    ? 1 - Animations.translated(next)
+                    : Animations.translated(current);
+            },
+
+            translate: function translate$2(percent, dir) {
+                return dir < 0
+                    ? [
+                        {transform: translate(percent * 100), zIndex: 0},
+                        {transform: translate(-30 * (1 - percent)), zIndex: -1} ]
+                    : [
+                        {transform: translate(-30 * percent), zIndex: -1},
+                        {transform: translate(100 * (1 - percent)), zIndex: 0}
+                    ];
             }
 
         }
 
     });
 
+    return Animations;
+
 }
 
-function plugin$2(UIkit) {
+function plugin$5(UIkit) {
 
-    if (plugin$2.installed) {
+    if (plugin$5.installed) {
         return;
     }
 
-    UIkit.use(plugin$3);
-
     var mixin = UIkit.mixin;
     var util = UIkit.util;
-    var $ = util.$;
-    var addClass = util.addClass;
-    var ajax = util.ajax;
-    var append = util.append;
-    var assign = util.assign;
-    var attr = util.attr;
     var css = util.css;
-    var doc = util.doc;
+    var Dimensions = util.Dimensions;
+    var each = util.each;
     var getImage = util.getImage;
-    var html = util.html;
-    var index = util.index;
-    var on = util.on;
-    var pointerDown = util.pointerDown;
-    var pointerMove = util.pointerMove;
-    var removeClass = util.removeClass;
-    var Transition = util.Transition;
-    var trigger = util.trigger;
+    var includes = util.includes;
+    var isNumber = util.isNumber;
+    var isUndefined = util.isUndefined;
+    var toFloat = util.toFloat;
+    var win = util.win;
 
-    var Animations = AnimationsPlugin$1(UIkit);
+    var props = ['x', 'y', 'bgx', 'bgy', 'rotate', 'scale', 'color', 'backgroundColor', 'borderColor', 'opacity', 'blur', 'hue', 'grayscale', 'invert', 'saturate', 'sepia', 'fopacity'];
 
-    UIkit.component('lightbox-panel', {
+    mixin.parallax = {
 
-        mixins: [mixin.container, mixin.modal, mixin.togglable, mixin.slideshow],
+        props: props.reduce(function (props, prop) {
+            props[prop] = 'list';
+            return props;
+        }, {
+            media: 'media'
+        }),
 
-        functional: true,
+        defaults: props.reduce(function (defaults, prop) {
+            defaults[prop] = undefined;
+            return defaults;
+        }, {
+            media: false
+        }),
 
-        defaults: {
-            preload: 1,
-            videoAutoplay: false,
-            delayControls: 3000,
-            items: [],
-            cls: 'uk-open',
-            clsPage: 'uk-lightbox-page',
-            selList: '.uk-lightbox-items',
-            attrItem: 'uk-lightbox-item',
-            selClose: '.uk-close-large',
-            pauseOnHover: false,
-            velocity: 2,
-            Animations: Animations,
-            template: "<div class=\"uk-lightbox uk-overflow-hidden\"> <ul class=\"uk-lightbox-items\"></ul> <div class=\"uk-lightbox-toolbar uk-position-top uk-text-right uk-transition-slide-top uk-transition-opaque\"> <button class=\"uk-lightbox-toolbar-icon uk-close-large\" type=\"button\" uk-close></button> </div> <a class=\"uk-lightbox-button uk-position-center-left uk-position-medium uk-transition-fade\" href=\"#\" uk-slidenav-previous uk-lightbox-item=\"previous\"></a> <a class=\"uk-lightbox-button uk-position-center-right uk-position-medium uk-transition-fade\" href=\"#\" uk-slidenav-next uk-lightbox-item=\"next\"></a> <div class=\"uk-lightbox-toolbar uk-lightbox-caption uk-position-bottom uk-text-center uk-transition-slide-bottom uk-transition-opaque\"></div> </div>"
+        computed: {
+
+            props: function props$1(properties, $el) {
+                var this$1 = this;
+
+
+                return props.reduce(function (props, prop) {
+
+                    if (isUndefined(properties[prop])) {
+                        return props;
+                    }
+
+                    var isColor = prop.match(/color/i),
+                        isCssProp = isColor || prop === 'opacity',
+                        steps = properties[prop].slice(0),
+                        pos, bgPos, diff;
+
+                    if (isCssProp) {
+                        css($el, prop, '');
+                    }
+
+                    if (steps.length < 2) {
+                        steps.unshift((prop === 'scale'
+                            ? 1
+                            : isCssProp
+                                ? css($el, prop)
+                                : 0) || 0);
+                    }
+
+                    var unit = includes(steps.join(''), '%') ? '%' : 'px';
+
+                    if (isColor) {
+
+                        var color = $el.style.color;
+                        steps = steps.map(function (step) { return parseColor($el, step); });
+                        $el.style.color = color;
+
+                    } else {
+
+                        steps = steps.map(toFloat);
+
+                    }
+
+                    if (prop.match(/^bg/)) {
+
+                        css($el, ("background-position-" + (prop[2])), '');
+                        bgPos = css($el, 'backgroundPosition').split(' ')[prop[2] === 'x' ? 0 : 1]; // IE 11 can't read background-position-[x|y]
+
+                        if (this$1.covers) {
+
+                            var min = Math.min.apply(Math, steps),
+                                max = Math.max.apply(Math, steps),
+                                down = steps.indexOf(min) < steps.indexOf(max);
+
+                            diff = max - min;
+
+                            steps = steps.map(function (step) { return step - (down ? min : max); });
+                            pos = (down ? -diff : 0) + "px";
+
+                        } else {
+
+                            pos = bgPos;
+
+                        }
+                    }
+
+                    props[prop] = {steps: steps, unit: unit, pos: pos, bgPos: bgPos, diff: diff};
+
+                    return props;
+
+                }, {});
+
+            },
+
+            bgProps: function bgProps() {
+                var this$1 = this;
+
+                return ['bgx', 'bgy'].filter(function (bg) { return bg in this$1.props; });
+            },
+
+            covers: function covers(_, $el) {
+                return css($el.style.backgroundSize !== '' ? css($el, 'backgroundSize', '') : $el, 'backgroundSize') === 'cover';
+            }
+
         },
 
-        created: function created() {
-            var this$1 = this;
-
-
-            this.$mount(append(this.container, this.template));
-
-            this.caption = $('.uk-lightbox-caption', this.$el);
-
-            this.items.forEach(function () { return append(this$1.list, '<li></li>'); });
-
+        disconnected: function disconnected() {
+            delete this._image;
         },
 
-        events: [
+        update: [
 
             {
 
-                name: (pointerMove + " " + pointerDown + " keydown"),
-
-                handler: 'showControls'
-
-            },
-
-            {
-
-                name: 'click',
-
-                self: true,
-
-                delegate: function delegate() {
-                    return this.slidesSelector;
-                },
-
-                handler: function handler(e) {
-                    e.preventDefault();
-                    this.hide();
-                }
-
-            },
-
-            {
-
-                name: 'shown',
-
-                self: true,
-
-                handler: 'showControls'
-            },
-
-            {
-
-                name: 'hide',
-
-                self: true,
-
-                handler: function handler() {
-
-                    this.hideControls();
-
-                    removeClass(this.slides, this.clsActive);
-                    Transition.stop(this.slides);
-
-                    delete this.index;
-                    delete this.percent;
-                    delete this._transitioner;
-
-                }
-            },
-
-            {
-
-                name: 'keyup',
-
-                el: function el() {
-                    return doc;
-                },
-
-                handler: function handler(e) {
-
-                    if (!this.isToggled(this.$el)) {
-                        return;
-                    }
-
-                    switch (e.keyCode) {
-                        case 37:
-                            this.show('previous');
-                            break;
-                        case 39:
-                            this.show('next');
-                            break;
-                    }
-                }
-            },
-
-            {
-
-                name: 'beforeitemshow',
-
-                handler: function handler(e) {
-
-                    if (this.isToggled()) {
-                        return;
-                    }
-
-                    this.preventCatch = true;
-
-                    e.preventDefault();
-
-                    this.animation = Animations['scale'];
-                    removeClass(e.target, this.clsActive);
-                    this.stack.splice(1, 0, this.index);
-
-                    this.toggleNow(this.$el, true);
-
-                }
-
-            },
-
-            {
-
-                name: 'itemshow',
-
-                handler: function handler(ref) {
-                    var this$1 = this;
-                    var target = ref.target;
-
-
-                    var i = index(target),
-                        caption = this.getItem(i).caption;
-
-                    css(this.caption, 'display', caption ? '' : 'none');
-                    html(this.caption, caption);
-
-                    for (var j = 0; j <= this.preload; j++) {
-                        this$1.loadItem(this$1.getIndex(i + j));
-                        this$1.loadItem(this$1.getIndex(i - j));
-                    }
-
-                    delete this._computeds.animation;
-
-                }
-
-            },
-
-            {
-
-                name: 'itemshown',
-
-                handler: function handler() {
-                    this.preventCatch = false;
-                }
-
-            },
-
-            {
-
-                name: 'itemload',
-
-                handler: function handler(_, item) {
+                read: function read(data) {
                     var this$1 = this;
 
 
-                    var source = item.source;
-                    var type = item.type;
-                    var alt = item.alt;
-                    var matches;
+                    this._resetComputeds();
 
-                    this.setItem(item, '<span uk-spinner></span>');
+                    data.active = !this.media || win.matchMedia(this.media).matches;
 
-                    if (!source) {
+                    if (data.image) {
+                        data.image.dimEl = {
+                            width: this.$el.offsetWidth,
+                            height: this.$el.offsetHeight
+                        };
+                    }
+
+                    if ('image' in data || !this.covers || !this.bgProps.length) {
                         return;
                     }
 
-                    // Image
-                    if (type === 'image' || source.match(/\.(jp(e)?g|png|gif|svg)$/i)) {
+                    var src = css(this.$el, 'backgroundImage').replace(/^none|url\(["']?(.+?)["']?\)$/, '$1');
 
-                        getImage(source).then(
-                            function (img) { return this$1.setItem(item, ("<img width=\"" + (img.width) + "\" height=\"" + (img.height) + "\" src=\"" + source + "\" alt=\"" + (alt ? alt : '') + "\">")); },
-                            function () { return this$1.setError(item); }
-                        );
+                    if (!src) {
+                        return;
+                    }
 
-                    // Video
-                    } else if (type === 'video' || source.match(/\.(mp4|webm|ogv)$/i)) {
+                    data.image = false;
 
-                        var video = $(("<video controls playsinline" + (item.poster ? (" poster=\"" + (item.poster) + "\"") : '') + " uk-video=\"autoplay: " + (this.videoAutoplay) + "\"></video>"));
-                        attr(video, 'src', source);
-
-                        on(video, 'error', function () { return this$1.setError(item); });
-                        on(video, 'loadedmetadata', function () {
-                            attr(video, {width: video.videoWidth, height: video.videoHeight});
-                            this$1.setItem(item, video);
-                        });
-
-                    // Iframe
-                    } else if (type === 'iframe') {
-
-                        this.setItem(item, ("<iframe class=\"uk-lightbox-iframe\" src=\"" + source + "\" frameborder=\"0\" allowfullscreen></iframe>"));
-
-                    // Youtube
-                    } else if (matches = source.match(/\/\/.*?youtube\.[a-z]+\/watch\?v=([^&\s]+)/) || source.match(/youtu\.be\/(.*)/)) {
-
-                        var id = matches[1],
-                            setIframe = function (width, height) {
-                                if ( width === void 0 ) width = 640;
-                                if ( height === void 0 ) height = 450;
-
-                                return this$1.setItem(item, getIframe(("//www.youtube.com/embed/" + id), width, height, this$1.videoAutoplay));
+                    getImage(src).then(function (img) {
+                        data.image = {
+                            width: img.naturalWidth,
+                            height: img.naturalHeight
                         };
 
-                        getImage(("//img.youtube.com/vi/" + id + "/maxresdefault.jpg")).then(
-                            function (ref) {
-                                var width = ref.width;
-                                var height = ref.height;
+                        this$1.$emit();
+                    });
 
-                                //youtube default 404 thumb, fall back to lowres
-                                if (width === 120 && height === 90) {
-                                    getImage(("//img.youtube.com/vi/" + id + "/0.jpg")).then(
-                                        function (ref) {
-                                            var width = ref.width;
-                                            var height = ref.height;
+                },
 
-                                            return setIframe(width, height);
-                                    },
-                                        setIframe
-                                    );
-                                } else {
-                                    setIframe(width, height);
-                                }
-                            },
-                            setIframe
-                        );
+                write: function write(ref) {
+                    var this$1 = this;
+                    var image = ref.image;
+                    var active = ref.active;
 
-                    // Vimeo
-                    } else if (matches = source.match(/(\/\/.*?)vimeo\.[a-z]+\/([0-9]+).*?/)) {
 
-                        ajax(("//vimeo.com/api/oembed.json?maxwidth=1920&url=" + (encodeURI(source))), {responseType: 'json'})
-                            .then(function (ref) {
-                                    var ref_response = ref.response;
-                                    var height = ref_response.height;
-                                    var width = ref_response.width;
-
-                                    return this$1.setItem(item, getIframe(("//player.vimeo.com/video/" + (matches[2])), width, height, this$1.videoAutoplay));
-                        }
-                            );
-
+                    if (!image) {
+                        return;
                     }
 
-                }
+                    if (!active) {
+                        css(this.$el, {backgroundSize: '', backgroundRepeat: ''});
+                        return;
+                    }
+
+                    var dimEl = image.dimEl,
+                        dim = Dimensions.cover(image, dimEl);
+
+                    this.bgProps.forEach(function (prop) {
+
+                        var ref = this$1.props[prop];
+                        var diff = ref.diff;
+                        var bgPos = ref.bgPos;
+                        var steps = ref.steps;
+                        var attr = prop === 'bgy' ? 'height' : 'width',
+                            span = dim[attr] - dimEl[attr];
+
+                        if (!bgPos.match(/%$|0px/)) {
+                            return;
+                        }
+
+                        if (span < diff) {
+                            dimEl[attr] = dim[attr] + diff - span;
+                        } else if (span > diff) {
+
+                            bgPos = parseFloat(bgPos);
+
+                            if (bgPos) {
+                                this$1.props[prop].steps = steps.map(function (step) { return step - (span - diff) / (100 / bgPos); });
+                            }
+                        }
+
+                        dim = Dimensions.cover(image, dimEl);
+                    });
+
+                    css(this.$el, {
+                        backgroundSize: ((dim.width) + "px " + (dim.height) + "px"),
+                        backgroundRepeat: 'no-repeat'
+                    });
+
+                },
+
+                events: ['load', 'resize']
 
             }
 
@@ -1295,61 +1283,320 @@ function plugin$2(UIkit) {
 
         methods: {
 
-            loadItem: function loadItem(index) {
-                if ( index === void 0 ) index = this.index;
+            reset: function reset() {
+                var this$1 = this;
 
-
-                var item = this.getItem(index);
-
-                if (item.content) {
-                    return;
-                }
-
-                trigger(this.$el, 'itemload', [item]);
+                each(this.getCss(0), function (_, prop) { return css(this$1.$el, prop, ''); });
             },
 
-            getItem: function getItem(index) {
-                if ( index === void 0 ) index = this.index;
+            getCss: function getCss(percent) {
 
-                return this.items[index] || {};
-            },
+                var translated = false,
+                    props = this.props;
 
-            setItem: function setItem(item, content) {
-                assign(item, {content: content});
-                var el = html(this.slides[this.items.indexOf(item)], content);
-                trigger(this.$el, 'itemloaded', [this, el]);
-                UIkit.update(null, el);
-            },
+                return Object.keys(props).reduce(function (css, prop) {
 
-            setError: function setError(item) {
-                this.setItem(item, '<span uk-icon="icon: bolt; ratio: 2"></span>');
-            },
+                    var ref = props[prop];
+                    var steps = ref.steps;
+                    var unit = ref.unit;
+                    var pos = ref.pos;
+                    var value = getValue(steps, percent);
 
-            showControls: function showControls() {
+                    switch (prop) {
 
-                clearTimeout(this.controlsTimer);
-                this.controlsTimer = setTimeout(this.hideControls, this.delayControls);
+                        // transforms
+                        case 'x':
+                        case 'y':
 
-                addClass(this.$el, 'uk-active', 'uk-transition-active');
+                            if (translated) {
+                                break;
+                            }
 
-            },
+                            var ref$1 = ['x', 'y'].map(function (dir) { return prop === dir
+                                ? value + unit
+                                : props[dir]
+                                    ? getValue(props[dir].steps, percent) + props[dir].unit
+                                    : 0; }
+                            );
+                    var x = ref$1[0];
+                    var y = ref$1[1];
 
-            hideControls: function hideControls() {
-                removeClass(this.$el, 'uk-active', 'uk-transition-active');
+                            translated = css.transform += " translate3d(" + x + ", " + y + ", 0)";
+                            break;
+                        case 'rotate':
+                            css.transform += " rotate(" + value + "deg)";
+                            break;
+                        case 'scale':
+                            css.transform += " scale(" + value + ")";
+                            break;
+
+                        // bg image
+                        case 'bgy':
+                        case 'bgx':
+                            css[("background-position-" + (prop[2]))] = "calc(" + pos + " + " + (value + unit) + ")";
+                            break;
+
+                        // color
+                        case 'color':
+                        case 'backgroundColor':
+                        case 'borderColor':
+
+                            var ref$2 = getStep(steps, percent);
+                    var start = ref$2[0];
+                    var end = ref$2[1];
+                    var p = ref$2[2];
+
+                            css[prop] = "rgba(" + (start.map(function (value, i) {
+                                    value = value + p * (end[i] - value);
+                                    return i === 3 ? toFloat(value) : parseInt(value, 10);
+                                }).join(',')) + ")";
+                            break;
+
+                        // CSS Filter
+                        case 'blur':
+                            css.filter += " blur(" + value + "px)";
+                            break;
+                        case 'hue':
+                            css.filter += " hue-rotate(" + value + "deg)";
+                            break;
+                        case 'fopacity':
+                            css.filter += " opacity(" + value + "%)";
+                            break;
+                        case 'grayscale':
+                        case 'invert':
+                        case 'saturate':
+                        case 'sepia':
+                            css.filter += " " + prop + "(" + value + "%)";
+                            break;
+
+                        default:
+                            css[prop] = value;
+                    }
+
+                    return css;
+
+                }, {transform: '', filter: ''});
+
             }
 
         }
 
-    });
+    };
 
-    function getIframe(src, width, height, autoplay) {
-        return ("<iframe src=\"" + src + "\" width=\"" + width + "\" height=\"" + height + "\" style=\"max-width: 100%; box-sizing: border-box;\" frameborder=\"0\" allowfullscreen uk-video=\"autoplay: " + autoplay + "\" uk-responsive></iframe>");
+    function parseColor(el, color) {
+        return css(css(el, 'color', color), 'color').split(/[(),]/g).slice(1, -1).concat(1).slice(0, 4).map(function (n) { return toFloat(n); });
+    }
+
+    function getStep(steps, percent) {
+        var count = steps.length - 1,
+            index = Math.min(Math.floor(count * percent), count - 1),
+            step = steps.slice(index, index + 2);
+
+        step.push(percent === 1 ? 1 : percent % (1 / count) * count);
+
+        return step;
+    }
+
+    function getValue(steps, percent) {
+        var ref = getStep(steps, percent);
+        var start = ref[0];
+        var end = ref[1];
+        var p = ref[2];
+        return (isNumber(start)
+            ? start + Math.abs(start - end) * p * (start < end ? 1 : -1)
+            : +end
+        ).toFixed(2);
     }
 
 }
 
 if (!false && typeof window !== 'undefined' && window.UIkit) {
-    window.UIkit.use(plugin$2);
+    window.UIkit.use(plugin$5);
+}
+
+function plugin$4(UIkit) {
+
+    if (plugin$4.installed) {
+        return;
+    }
+
+    UIkit.use(plugin$5);
+
+    var mixin = UIkit.mixin;
+    var ref = UIkit.util;
+    var closest = ref.closest;
+    var css = ref.css;
+    var endsWith = ref.endsWith;
+    var noop = ref.noop;
+    var Transition = ref.Transition;
+
+    UIkit.component('slideshow-parallax', {
+
+        mixins: [mixin.parallax],
+
+        computed: {
+
+            item: function item() {
+                var slideshow = UIkit.getComponent(closest(this.$el, '.uk-slideshow'), 'slideshow');
+                return slideshow && closest(this.$el, slideshow.slidesSelector);
+            }
+
+        },
+
+        events: [
+
+            {
+
+                name: 'itemshown',
+
+                self: true,
+
+                el: function el() {
+                    return this.item;
+                },
+
+                handler: function handler() {
+                    css(this.$el, this.getCss(.5));
+                }
+
+            },
+
+            {
+                name: 'itemin itemout',
+
+                self: true,
+
+                el: function el() {
+                    return this.item;
+                },
+
+                handler: function handler(ref) {
+                    var type = ref.type;
+                    var ref_detail = ref.detail;
+                    var percent = ref_detail.percent;
+                    var duration = ref_detail.duration;
+                    var timing = ref_detail.timing;
+                    var dir = ref_detail.dir;
+
+
+                    Transition.cancel(this.$el);
+                    css(this.$el, this.getCss(getCurrent(type, dir, percent)));
+
+                    Transition.start(this.$el, this.getCss(isIn(type)
+                        ? .5
+                        : dir > 0
+                            ? 1
+                            : 0
+                    ), duration, timing).catch(noop);
+
+                }
+            },
+
+            {
+                name: 'transitioncanceled transitionend',
+
+                self: true,
+
+                el: function el() {
+                    return this.item;
+                },
+
+                handler: function handler() {
+                    Transition.cancel(this.$el);
+                }
+
+            },
+
+            {
+                name: 'itemtranslatein itemtranslateout',
+
+                self: true,
+
+                el: function el() {
+                    return this.item;
+                },
+
+                handler: function handler(ref) {
+                    var type = ref.type;
+                    var ref_detail = ref.detail;
+                    var percent = ref_detail.percent;
+                    var dir = ref_detail.dir;
+
+                    Transition.cancel(this.$el);
+                    css(this.$el, this.getCss(getCurrent(type, dir, percent)));
+                }
+            }
+
+        ]
+
+    });
+
+    function isIn(type) {
+        return endsWith(type, 'in');
+    }
+
+    function getCurrent(type, dir, percent) {
+
+        percent /= 2;
+
+        return !isIn(type)
+            ? dir < 0
+                ? percent
+                : 1 - percent
+            : dir < 0
+                ? 1 - percent
+                : percent;
+    }
+
+}
+
+if (!false && typeof window !== 'undefined' && window.UIkit) {
+    window.UIkit.use(plugin$4);
+}
+
+function SliderReactive (UIkit) {
+
+    var ref = UIkit.util;
+    var fastdom = ref.fastdom;
+    var removeClass = ref.removeClass;
+
+    return {
+
+        ready: function ready() {
+            var this$1 = this;
+
+            fastdom.write(function () { return this$1.show(this$1.getValidIndex()); });
+        },
+
+        update: [
+
+            {
+
+                read: function read() {
+                    this._resetComputeds();
+                },
+
+                write: function write() {
+
+                    if (this.stack.length) {
+                        return;
+                    }
+
+                    var index = this.getValidIndex();
+                    delete this.index;
+                    removeClass(this.slides, this.clsActive, this.clsActivated);
+                    this.show(index);
+
+                },
+
+                events: ['load', 'resize']
+
+            }
+
+        ]
+
+    };
+
 }
 
 function plugin(UIkit) {
@@ -1358,131 +1605,67 @@ function plugin(UIkit) {
         return;
     }
 
+    UIkit.use(plugin$4);
     UIkit.use(plugin$2);
 
-    var util = UIkit.util;
-    var $$ = util.$$;
-    var assign = util.assign;
-    var data = util.data;
-    var index = util.index;
+    var mixin = UIkit.mixin;
+    var ref = UIkit.util;
+    var height = ref.height;
 
-    UIkit.component('lightbox', {
+    var Animations = AnimationsPlugin$1(UIkit);
 
-        attrs: true,
+    UIkit.component('slideshow', {
+
+        mixins: [mixin.class, mixin.slideshow, SliderReactive(UIkit)],
 
         props: {
-            animation: String,
-            container: Boolean,
-            toggle: String,
-            autoplay: Boolean,
-            autoplayInterval: Number,
-            videoAutoplay: Boolean
+            ratio: String,
+            minHeight: Boolean,
+            maxHeight: Boolean,
         },
 
         defaults: {
-            animation: undefined,
-            container: true,
-            toggle: 'a',
-            autoplay: 0,
-            videoAutoplay: false
+            ratio: '16:9',
+            minHeight: false,
+            maxHeight: false,
+            selList: '.uk-slideshow-items',
+            attrItem: 'uk-slideshow-item',
+            selNav: '.uk-slideshow-nav',
+            Animations: Animations
         },
 
-        computed: {
+        update: {
 
-            toggles: function toggles(ref, $el) {
-                var toggle = ref.toggle;
+            read: function read() {
 
-                return $$(toggle, $el);
-            }
+                var ref = this.ratio.split(':').map(Number);
+                var width = ref[0];
+                var height = ref[1];
 
-        },
+                height = height * this.$el.offsetWidth / width;
 
-        disconnected: function disconnected() {
-            this._destroy();
-        },
-
-        events: [
-
-            {
-
-                name: 'click',
-
-                delegate: function delegate() {
-                    return ((this.toggle) + ":not(.uk-disabled)");
-                },
-
-                handler: function handler(e) {
-                    e.preventDefault();
-                    e.current.blur();
-                    this.show(index(this.toggles, e.current));
+                if (this.minHeight) {
+                    height = Math.max(this.minHeight, height);
                 }
 
-            }
-
-        ],
-
-        update: function update(data) {
-
-            if (this.panel && this.animation) {
-                this.panel.$props.animation = this.animation;
-                this.panel.$emit();
-            }
-
-            if (!this.panel || data.toggles && isEqualList(data.toggles, this.toggles)) {
-                return;
-            }
-
-            data.toggles = this.toggles;
-            this._destroy();
-            this._init();
-
-        },
-
-        methods: {
-
-            _init: function _init() {
-                return this.panel = this.panel || UIkit.lightboxPanel(assign({}, this.$props, {
-                    items: this.toggles.reduce(function (items, el) {
-                        items.push(['href', 'caption', 'type', 'poster', 'alt'].reduce(function (obj, attr) {
-                            obj[attr === 'href' ? 'source' : attr] = data(el, attr);
-                            return obj;
-                        }, {}));
-                        return items;
-                    }, [])
-                }));
-            },
-
-            _destroy: function _destroy() {
-                if (this.panel) {
-                    this.panel.$destroy(true);
-                    this.panel = null;
-                }
-            },
-
-            show: function show(index) {
-
-                if (!this.panel) {
-                    this._init();
+                if (this.maxHeight) {
+                    height = Math.min(this.maxHeight, height);
                 }
 
-                return this.panel.show(index);
-
+                return {height: height};
             },
 
-            hide: function hide() {
+            write: function write(ref) {
+                var hgt = ref.height;
 
-                return this.panel && this.panel.hide();
+                height(this.list, Math.floor(hgt));
+            },
 
-            }
+            events: ['load', 'resize']
 
         }
 
     });
-
-    function isEqualList(listA, listB) {
-        return listA.length === listB.length
-            && listA.every(function (el, i) { return el !== listB[i]; });
-    }
 
 }
 
