@@ -11748,7 +11748,7 @@ iframe.uk-cover {
     page-break-after: avoid;
   }
 }
-.uk-card-hover:not(.tb-card-entry):not(.tb-card-junior):not(.tb-card-senior):hover {
+.tb-card-hover:not(.tb-card-entry):not(.tb-card-junior):not(.tb-card-senior):hover {
   background: #fff;
 }
 /* entry class
@@ -11759,7 +11759,7 @@ iframe.uk-cover {
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
   background: #47cfff;
 }
-.tb-card-entry.uk-card-hover:hover {
+.tb-card-entry.tb-card-hover:hover {
   background: #2dc8ff;
 }
 /* junior class
@@ -11770,7 +11770,7 @@ iframe.uk-cover {
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
   background: #fa867a;
 }
-.tb-card-junior.uk-card-hover:hover {
+.tb-card-junior.tb-card-hover:hover {
   background: #f97061;
 }
 /* senior class
@@ -11781,6 +11781,6 @@ iframe.uk-cover {
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
   background: #92d050;
 }
-.tb-card-senior.uk-card-hover:hover {
+.tb-card-senior.tb-card-hover:hover {
   background: #85cb3c;
 }
