@@ -1,21 +1,56 @@
+// --------------------------
 // variables
 // -------------------------- 
 @card-entry-background: #47cfff;
-@card-junior-background: #fa867a;
-@card-senior-background: #92d050;
+@card-entry-hover-background: darken(#47cfff, 5%);
 
+@card-junior-background: #fa867a;
+@card-junior-hover-background: darken(#fa867a, 5%);
+
+@card-senior-background: #92d050;
+@card-senior-hover-background: darken(#92d050, 5%);
+
+// --------------------------
+// hover modifier
+// -------------------------- 
+.uk-card-hover:not(.tb-card-entry):not(.tb-card-junior):not(.tb-card-senior):hover {
+  background: @card-hover-background;
+}
+
+// --------------------------
+// custom card
+// -------------------------- 
+
+/* entry class
+ ============= */
 .tb-card-entry {
-  .uk-card-primary;
+  .uk-card-default;
   background: @card-entry-background;
 }
 
+.tb-card-entry.uk-card-hover:hover {
+  background: @card-entry-hover-background;
+}
+
+
+/* junior class
+ ============= */
 .tb-card-junior {
-  .uk-card-default;
+  .uk-card-primary;
   background: @card-junior-background;
 }
 
-.tb-card-junior {
-  .uk-card-default;
+.tb-card-junior.uk-card-hover:hover {
+  background: @card-junior-hover-background;
+}
+
+/* senior class
+ ============= */
+.tb-card-senior {
+  .uk-card-primary;
   background: @card-senior-background;
 }
 
+.tb-card-senior.uk-card-hover:hover {
+  background: @card-senior-hover-background;
+}
