@@ -11587,11 +11587,14 @@ iframe.uk-cover {
 .tb-card-hover:not(.tb-card-entry):not(.tb-card-junior):not(.tb-card-senior):hover {
   background: #fff;
 }
+.uk-card-title {
+  color: #fff;
+}
 /* entry class
  ============= */
 .tb-card-entry {
-  background: #fff;
-  color: #666;
+  background: #1e87f0;
+  color: #fff;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
   background: #47cfff;
 }
